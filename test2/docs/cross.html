@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="análisis-exploratorio-inicial.html"/>
-<link rel="next" href="parts.html"/>
+<link rel="next" href="modelo-de-hw-y-suavizamiento.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -197,7 +197,13 @@ div.csl-indent {
 <li class="chapter" data-level="3.8.3" data-path="cross.html"><a href="cross.html#distribución"><i class="fa fa-check"></i><b>3.8.3</b> Distribución</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="parts.html"><a href="parts.html"><i class="fa fa-check"></i><b>4</b> Parts</a></li>
+<li class="chapter" data-level="4" data-path="modelo-de-hw-y-suavizamiento.html"><a href="modelo-de-hw-y-suavizamiento.html"><i class="fa fa-check"></i><b>4</b> Modelo de HW y Suavizamiento</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="modelo-de-hw-y-suavizamiento.html"><a href="modelo-de-hw-y-suavizamiento.html#modelo-de-holt-winters"><i class="fa fa-check"></i><b>4.1</b> Modelo de Holt-Winters</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="modelo-de-hw-y-suavizamiento.html"><a href="modelo-de-hw-y-suavizamiento.html#suavizamiento-exponencial-simple"><i class="fa fa-check"></i><b>4.1.1</b> Suavizamiento Exponencial Simple</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="5" data-path="footnotes-and-citations.html"><a href="footnotes-and-citations.html"><i class="fa fa-check"></i><b>5</b> Footnotes and citations</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="footnotes-and-citations.html"><a href="footnotes-and-citations.html#footnotes"><i class="fa fa-check"></i><b>5.1</b> Footnotes</a></li>
@@ -243,20 +249,6 @@ div.csl-indent {
 <p>Se utiliza la prueba de Dickey-Fuller Aumentado (ADF) para obtener una estadística que permita confirmar o descartar la estacionalidad de la serie Casos de Dengue Grave en Cali.</p>
 <div id="evaluación-inicial" class="section level3 hasAnchor" number="3.1.1">
 <h3><span class="header-section-number">3.1.1</span> Evaluación inicial<a href="cross.html#evaluación-inicial" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="cross.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
-<span id="cb1-2"><a href="cross.html#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="cross.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-4"><a href="cross.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-5"><a href="cross.html#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="cross.html#cb1-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&quot;~/0. MCD/3/TS/unidad 2/data.xlsx&quot;</span>, <span class="at">sheet =</span> <span class="st">&quot;220m&quot;</span>)</span>
-<span id="cb1-7"><a href="cross.html#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="cross.html#cb1-8" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(data<span class="sc">$</span>date,<span class="at">format =</span> <span class="st">&quot;%d/%m/%Y&quot;</span>)</span>
-<span id="cb1-9"><a href="cross.html#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="cross.html#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">attach</span>(data)</span>
-<span id="cb1-11"><a href="cross.html#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="cross.html#cb1-12" aria-hidden="true" tabindex="-1"></a>c220.ts <span class="ot">&lt;-</span> <span class="fu">ts</span>(<span class="fu">sqrt</span>(c220), <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">2015</span>,<span class="dv">1</span>), <span class="at">frequency=</span><span class="dv">12</span>)</span>
-<span id="cb1-13"><a href="cross.html#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="cross.html#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">adf.test</span>(c220.ts)</span></code></pre></div>
 <pre><code>## 
 ##  Augmented Dickey-Fuller Test
 ## 
@@ -268,9 +260,9 @@ div.csl-indent {
 <div id="evaluación-después-de-transformar-la-ts" class="section level3 hasAnchor" number="3.1.2">
 <h3><span class="header-section-number">3.1.2</span> Evaluación después de transformar la TS<a href="cross.html#evaluación-después-de-transformar-la-ts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>En la búsqueda de opciones de representación se había empleado el Operador Diferencia, y dado que pareciera tener algún potencial para configurar una dinámica que visibilice ciclos periódicos, se realizó un proceso itetarivo que condujo a identificar que si se utiliza un rezago de 1 periodo, entonces, la prueba ADF generaría un resultado distinto al obtenido en la sección anterior.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="cross.html#cb3-1" aria-hidden="true" tabindex="-1"></a>c220i.ts <span class="ot">&lt;-</span> <span class="fu">diff</span>(c220.ts, <span class="at">lag =</span> <span class="dv">1</span>)</span>
-<span id="cb3-2"><a href="cross.html#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="cross.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">adf.test</span>(c220i.ts)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="cross.html#cb2-1" aria-hidden="true" tabindex="-1"></a>c220i.ts <span class="ot">&lt;-</span> <span class="fu">diff</span>(c220.ts, <span class="at">lag =</span> <span class="dv">1</span>)</span>
+<span id="cb2-2"><a href="cross.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="cross.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">adf.test</span>(c220i.ts)</span></code></pre></div>
 <pre><code>## 
 ##  Augmented Dickey-Fuller Test
 ## 
@@ -286,41 +278,41 @@ div.csl-indent {
 <p>Como se muestra a continuación, los resultados obtenidos no parecen ser especialmente significativos, porque presentan patrones especialmente destacables y no se presenta ciclos evidentes. Todo esto pareciera resaltar cierta independencia de los valores que toma la variable a lo largo del tiempouna vez más la particularidad de la serie de tiempo, aun después de las transformaciones realizadas hasta ahora.</p>
 <div id="acf" class="section level3 hasAnchor" number="3.2.1">
 <h3><span class="header-section-number">3.2.1</span> ACF<a href="cross.html#acf" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="cross.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(c220i.ts)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="cross.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(c220i.ts)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/fig8-1.png" width="80%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="pacf" class="section level3 hasAnchor" number="3.2.2">
 <h3><span class="header-section-number">3.2.2</span> PACF<a href="cross.html#pacf" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cross.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(c220i.ts)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="cross.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(c220i.ts)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/fig9-1.png" width="80%" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="separación-de-componentes" class="section level2 hasAnchor" number="3.3">
 <h2><span class="header-section-number">3.3</span> Separación de componentes<a href="cross.html#separación-de-componentes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Ahora se presenta la descomposición de los componentes de la serie, con la intención de comprender mejor su comportamiento y tendencias a lo largo del tiempo.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="cross.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb7-2"><a href="cross.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb7-3"><a href="cross.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
-<span id="cb7-4"><a href="cross.html#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="cross.html#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir los componentes en un marco de datos</span></span>
-<span id="cb7-6"><a href="cross.html#cb7-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">date =</span> <span class="fu">time</span>(decomp<span class="sc">$</span>x),</span>
-<span id="cb7-7"><a href="cross.html#cb7-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>x),</span>
-<span id="cb7-8"><a href="cross.html#cb7-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">trend =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>trend),</span>
-<span id="cb7-9"><a href="cross.html#cb7-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seasonal =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>seasonal),</span>
-<span id="cb7-10"><a href="cross.html#cb7-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">remainder =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>random))</span>
-<span id="cb7-11"><a href="cross.html#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="cross.html#cb7-12" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> <span class="fu">gather</span>(df, component, value, <span class="sc">-</span>date)</span>
-<span id="cb7-13"><a href="cross.html#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="cross.html#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="cross.html#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear gráficos separados para cada componente</span></span>
-<span id="cb7-16"><a href="cross.html#cb7-16" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value, <span class="at">group =</span> component)) <span class="sc">+</span></span>
-<span id="cb7-17"><a href="cross.html#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;gray50&quot;</span>, <span class="at">size =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
-<span id="cb7-18"><a href="cross.html#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(component <span class="sc">~</span> ., <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
-<span id="cb7-19"><a href="cross.html#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb7-20"><a href="cross.html#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="cross.html#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Presentar los gráficos juntos utilizando ggarrange</span></span>
-<span id="cb7-22"><a href="cross.html#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(plots, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">0.5</span>),</span>
-<span id="cb7-23"><a href="cross.html#cb7-23" aria-hidden="true" tabindex="-1"></a>          <span class="at">common.legend =</span> <span class="cn">TRUE</span>, <span class="at">legend =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cross.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-2"><a href="cross.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb6-3"><a href="cross.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb6-4"><a href="cross.html#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="cross.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir los componentes en un marco de datos</span></span>
+<span id="cb6-6"><a href="cross.html#cb6-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">date =</span> <span class="fu">time</span>(decomp<span class="sc">$</span>x),</span>
+<span id="cb6-7"><a href="cross.html#cb6-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>x),</span>
+<span id="cb6-8"><a href="cross.html#cb6-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">trend =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>trend),</span>
+<span id="cb6-9"><a href="cross.html#cb6-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">seasonal =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>seasonal),</span>
+<span id="cb6-10"><a href="cross.html#cb6-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">remainder =</span> <span class="fu">as.vector</span>(decomp<span class="sc">$</span>random))</span>
+<span id="cb6-11"><a href="cross.html#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="cross.html#cb6-12" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> <span class="fu">gather</span>(df, component, value, <span class="sc">-</span>date)</span>
+<span id="cb6-13"><a href="cross.html#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="cross.html#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="cross.html#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear gráficos separados para cada componente</span></span>
+<span id="cb6-16"><a href="cross.html#cb6-16" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df_long, <span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value, <span class="at">group =</span> component)) <span class="sc">+</span></span>
+<span id="cb6-17"><a href="cross.html#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;gray50&quot;</span>, <span class="at">size =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb6-18"><a href="cross.html#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(component <span class="sc">~</span> ., <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-19"><a href="cross.html#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb6-20"><a href="cross.html#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="cross.html#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Presentar los gráficos juntos utilizando ggarrange</span></span>
+<span id="cb6-22"><a href="cross.html#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(plots, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">0.5</span>),</span>
+<span id="cb6-23"><a href="cross.html#cb6-23" aria-hidden="true" tabindex="-1"></a>          <span class="at">common.legend =</span> <span class="cn">TRUE</span>, <span class="at">legend =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/fig10-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>La tendencia de la serie muestra varios cambios de dirección general, siendo que en algunos casos una misma dirección se mantendría por alrededor de 24 meses, pero no se podría asegurar que se trata de intérvalos fijos.</p>
 <p>La estacionalidad presenta los patrones repetitivos más estables, que efectivamente tiene sus puntos más alto en los primeros meses del año, tal como se había anticipado anteriormente en los análisis a través del diagrama de violín.</p>
@@ -329,16 +321,16 @@ div.csl-indent {
 <div id="modelo-arima" class="section level2 hasAnchor" number="3.4">
 <h2><span class="header-section-number">3.4</span> Modelo ARIMA<a href="cross.html#modelo-arima" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>A continuación se aplica la función auto.arima para encontrar un modelo de ajuste eficiente.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="cross.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="cross.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code></pre></div>
 <pre><code>## 
 ## Attaching package: &#39;forecast&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:ggpubr&#39;:
 ## 
 ##     gghistogram</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="cross.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Aplicar un modelo ARIMA automático a la TS</span></span>
-<span id="cb11-2"><a href="cross.html#cb11-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(c220i.ts)</span>
-<span id="cb11-3"><a href="cross.html#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="cross.html#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="cross.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Aplicar un modelo ARIMA automático a la TS</span></span>
+<span id="cb10-2"><a href="cross.html#cb10-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(c220i.ts)</span>
+<span id="cb10-3"><a href="cross.html#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="cross.html#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
 <pre><code>## Series: c220i.ts 
 ## ARIMA(0,0,1) with zero mean 
 ## 
@@ -358,13 +350,13 @@ div.csl-indent {
 <div id="puntos-de-cambio" class="section level2 hasAnchor" number="3.5">
 <h2><span class="header-section-number">3.5</span> Puntos de cambio<a href="cross.html#puntos-de-cambio" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>También se intentó detectar puntos de cambio de comportamiento de la serie de tiempo.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="cross.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(changepoint)</span>
-<span id="cb13-2"><a href="cross.html#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="cross.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar la función cpt.mean() a la serie de tiempo</span></span>
-<span id="cb13-4"><a href="cross.html#cb13-4" aria-hidden="true" tabindex="-1"></a>cpt_obj <span class="ot">&lt;-</span> <span class="fu">cpt.mean</span>(c220i.ts, <span class="at">method =</span> <span class="st">&quot;AMOC&quot;</span>)</span>
-<span id="cb13-5"><a href="cross.html#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="cross.html#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar los resultados</span></span>
-<span id="cb13-7"><a href="cross.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cpt_obj)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="cross.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(changepoint)</span>
+<span id="cb12-2"><a href="cross.html#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="cross.html#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar la función cpt.mean() a la serie de tiempo</span></span>
+<span id="cb12-4"><a href="cross.html#cb12-4" aria-hidden="true" tabindex="-1"></a>cpt_obj <span class="ot">&lt;-</span> <span class="fu">cpt.mean</span>(c220i.ts, <span class="at">method =</span> <span class="st">&quot;AMOC&quot;</span>)</span>
+<span id="cb12-5"><a href="cross.html#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="cross.html#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar los resultados</span></span>
+<span id="cb12-7"><a href="cross.html#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cpt_obj)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/fig11-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>La ausencia de puntos de cambio en la gráfica indica que no se tiene evidencia de que la serie de tiempo tenga puntos de cambio significativos en su media. En consecuencia, la serie de tiempo se mantiene relativamente estable sin cambios repentinos de nivel.</p>
 </div>
@@ -372,20 +364,20 @@ div.csl-indent {
 <h2><span class="header-section-number">3.6</span> Predicción<a href="cross.html#predicción" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Se realizó un pronóstico del valor de un mes futuro de la serie de tiempo.</p>
 <p>La gráfica presenta tanto el valor preciso como los intérvalos de confianza. En esta oportunidad, se consideró conveniente este cortísimo plazo porque no se cuenta con la robustez necesaria para elegir un lapso más extenso.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="cross.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
-<span id="cb14-2"><a href="cross.html#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="cross.html#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer predicciones para los próximos meses</span></span>
-<span id="cb14-4"><a href="cross.html#cb14-4" aria-hidden="true" tabindex="-1"></a>fc <span class="ot">&lt;-</span> <span class="fu">forecast</span>(c220i.ts, <span class="at">h=</span><span class="dv">1</span>)</span>
-<span id="cb14-5"><a href="cross.html#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="cross.html#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="cross.html#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las predicciones y los intervalos de confianza</span></span>
-<span id="cb14-8"><a href="cross.html#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fc)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="cross.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb13-2"><a href="cross.html#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="cross.html#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hacer predicciones para los próximos meses</span></span>
+<span id="cb13-4"><a href="cross.html#cb13-4" aria-hidden="true" tabindex="-1"></a>fc <span class="ot">&lt;-</span> <span class="fu">forecast</span>(c220i.ts, <span class="at">h=</span><span class="dv">1</span>)</span>
+<span id="cb13-5"><a href="cross.html#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="cross.html#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="cross.html#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las predicciones y los intervalos de confianza</span></span>
+<span id="cb13-8"><a href="cross.html#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fc)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/fig12-1.png" width="80%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="validación" class="section level2 hasAnchor" number="3.7">
 <h2><span class="header-section-number">3.7</span> Validación<a href="cross.html#validación" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>A continuación se presenta el resultado del procedimiento realizado para detectar los valores atípicos de la serie de tiempo.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="cross.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data.ts.outliers)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="cross.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data.ts.outliers)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/fig13-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>La gráfica presenta los tres valores que difieren significativamente del patrón general de la serie de tiempo y que coincidirán con los eventos inusuales identificados en secciones anteriores de este reporte.</p>
 </div>
@@ -394,9 +386,9 @@ div.csl-indent {
 <p>Finalmente, se realizó la validación de algunos supuestos de un modelo ARIMA.</p>
 <div id="media-cero-de-los-residuos" class="section level3 hasAnchor" number="3.8.1">
 <h3><span class="header-section-number">3.8.1</span> Media cero de los residuos<a href="cross.html#media-cero-de-los-residuos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="cross.html#cb16-1" aria-hidden="true" tabindex="-1"></a>mr<span class="ot">&lt;-</span>fit<span class="sc">$</span>residuals <span class="co"># estos son los residuos del modelo</span></span>
-<span id="cb16-2"><a href="cross.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(mr, <span class="at">alternative=</span><span class="st">&#39;two.sided&#39;</span>,</span>
-<span id="cb16-3"><a href="cross.html#cb16-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">conf.level=</span><span class="fl">0.95</span>, <span class="at">mu=</span><span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="cross.html#cb15-1" aria-hidden="true" tabindex="-1"></a>mr<span class="ot">&lt;-</span>fit<span class="sc">$</span>residuals <span class="co"># estos son los residuos del modelo</span></span>
+<span id="cb15-2"><a href="cross.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(mr, <span class="at">alternative=</span><span class="st">&#39;two.sided&#39;</span>,</span>
+<span id="cb15-3"><a href="cross.html#cb15-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">conf.level=</span><span class="fl">0.95</span>, <span class="at">mu=</span><span class="dv">0</span>)</span></code></pre></div>
 <pre><code>## 
 ##  One Sample t-test
 ## 
@@ -412,14 +404,14 @@ div.csl-indent {
 </div>
 <div id="independencia-de-los-residuos" class="section level3 hasAnchor" number="3.8.2">
 <h3><span class="header-section-number">3.8.2</span> Independencia de los residuos<a href="cross.html#independencia-de-los-residuos" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="cross.html#cb18-1" aria-hidden="true" tabindex="-1"></a>independencia <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(mr, <span class="at">type=</span><span class="st">&quot;Ljung-Box&quot;</span>) <span class="co"># Test de Ljung-Box</span></span>
-<span id="cb18-2"><a href="cross.html#cb18-2" aria-hidden="true" tabindex="-1"></a>independencia<span class="sc">$</span>p.value</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="cross.html#cb17-1" aria-hidden="true" tabindex="-1"></a>independencia <span class="ot">&lt;-</span> <span class="fu">Box.test</span>(mr, <span class="at">type=</span><span class="st">&quot;Ljung-Box&quot;</span>) <span class="co"># Test de Ljung-Box</span></span>
+<span id="cb17-2"><a href="cross.html#cb17-2" aria-hidden="true" tabindex="-1"></a>independencia<span class="sc">$</span>p.value</span></code></pre></div>
 <pre><code>## [1] 0.9309423</code></pre>
 <p>En este caso, el resultado del pvalor indica que no hay suficiente evidencia para rechazar la hipótesis nula de independencia de los residuos.</p>
 </div>
 <div id="distribución" class="section level3 hasAnchor" number="3.8.3">
 <h3><span class="header-section-number">3.8.3</span> Distribución<a href="cross.html#distribución" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="cross.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(mr)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="cross.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(mr)</span></code></pre></div>
 <pre><code>## 
 ##  Shapiro-Wilk normality test
 ## 
@@ -436,7 +428,7 @@ div.csl-indent {
         </div>
       </div>
 <a href="análisis-exploratorio-inicial.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="parts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-de-hw-y-suavizamiento.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
