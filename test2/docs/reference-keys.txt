@@ -20,3 +20,11 @@ sharing-your-book
 publishing
 pages
 metadata-for-sharing
+análisis-exploratorio-inicial
+primeras-impresiones
+visualización-inicial
+promedio-móvil
+análisis-de-rezagos
+comporamiento-mensual
+operador-diferencia
+conclusión-preliminar
