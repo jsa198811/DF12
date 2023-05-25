@@ -11,6 +11,17 @@ Se utiliza la prueba de Dickey-Fuller Aumentado (ADF) para obtener una estadíst
 
 library(tseries)
 
+library(readxl)
+library(dplyr)
+
+data <- read_excel("~/0. MCD/3/TS/unidad 2/data.xlsx", sheet = "220m")
+
+data$date <- as.Date(data$date,format = "%d/%m/%Y")
+
+attach(data)
+
+c220.ts <- ts(sqrt(c220), start = c(2015,1), frequency=12)
+
 adf.test(c220.ts)
 
 ```
