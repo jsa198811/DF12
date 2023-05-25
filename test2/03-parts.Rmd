@@ -1,12 +1,91 @@
-# Parts
+# Modelo de HW y Suavizamiento
 
-You can add parts to organize one or more book chapters together. Parts can be inserted at the top of an .Rmd file, before the first-level chapter heading in that same file. 
+En esta nueva sección se abordan aproximaciones cuantitativas al pronóstico de series temporales.
 
-Add a numbered part: `# (PART) Act one {-}` (followed by `# A chapter`)
 
-Add an unnumbered part: `# (PART\*) Act one {-}` (followed by `# A chapter`)
+## Modelo de Holt-Winters
 
-Add an appendix as a special kind of un-numbered part: `# (APPENDIX) Other stuff {-}` (followed by `# A chapter`). Chapters in an appendix are prepended with letters instead of numbers.
+Para comenzar, el modelo Holt-Winters es una técnica muy utilizada en el pronóstico de series de tiempo. Parece un recurso particularmente adecuado para el análisis de los casos de Dengue Grave, porque se trata de un conjunto de datos que corresponde a una ventana de tiempo relativamente pequeña. Además, los procesos de vigilancia epidemiológica típicamente se valen de pronósticos a corto plazo, por lo cual, algunas de las fortalezas del modelo Holt-Winter pueden ser útiles para predecir valores futuros de contagio a partir de las tendencias y patrones pasados.
+
+
+A continuación se presenta el modelo ajustado a partir de la serie de tiempo que se creó utilizando el operador diferencia. Se seleccionó la componente estacional aditiva, pensando en que podría ser una elección adecuada dados los hallazgos preliminares de una cierta concentración de casos en los primeros meses del año, presumiblemente debido a factores ambientales, de modo que esta opción permitiría separar claramente la tendencia de los patrones estacionales de la serie de tiempo.
+
+A partir de lo anterior, se encontraron los parámetros alpha, beta y gamma para dar peso a los valores pasados, a la tendencia y a la estacionalidad de los pronósticos.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(tseries)
+library(readxl)
+library(dplyr)
+
+data <- read_excel("~/0. MCD/3/TS/unidad 2/data.xlsx", sheet = "220m")
+
+data$date <- as.Date(data$date,format = "%d/%m/%Y")
+
+attach(data)
+
+c220.ts <- ts(sqrt(c220), start = c(2015,1), frequency=12)
+
+c220i.ts <- diff(c220.ts, lag = 1)
+
+```
+
+
+```{r}
+
+library(TSA)
+
+modelo_HW = HoltWinters(c220i.ts, seasonal = "additive")
+plot(modelo_HW, main="Ajuste con Holt-Winters", xlab="Año", ylab="Diferencia de casos")
+
+```
+
+
+Como se puede observar, salvo algunas pocas excepciones, las formas generales de las dos series no son parecidas. De modo que los puntos ajustados del modelo no siguen de manera precisa las tendencias y patrones de la serie de casos de Dengue Grave.
+
+
+Con todo, se realiza la descomposición de los componentes de la serie de tiempo: nivel, tendencia y estacionalidad, como se observa a continación.
+
+
+```{r}
+
+plot(fitted(modelo_HW), main="Descomposición con HV", xlab="Año", ylab="Dif. Casos")
+
+```
+
+
+Si bien la componente de estacionalidad es un tanto irregular, en general, se confirma que el inicio de cada año presenta un repunte importante respecto a los valores de otros periodos. Además, aunque la data cruda no permitía identificarlo con claridad, las transformaciones y procedimientos aplicados permiten ver una cierta tendencia al alza en los casos de dengue grave.
+
+
+A partir de todo lo anterior, se procedió a realizar un pronóstico de la cantidad de casos de dengue grave de los primeros tres meses del año 2022. 
+
+
+```{r}
+
+pred=predict(modelo_HW, 3, prediction.interval = TRUE)
+pred
+
+```
+
+```{r}
+
+plot(modelo_HW, pred)
+
+```
+
+
+El alcance del análisis hasta este punto no incluye la evaluación de la calidad de este pronóstico. Sin embargo, en caso de lograr un buen ajuste, se trataría de un insumo útil para tomar de decisiones oportunas relacionadas, por ejemplo, con las medidas de respuesta necesarias ante el escenario de un brote de Dengue Grave.
+
+
+
+### Suavizamiento Exponencial Simple
+
+
+```{r}
+
+
+
+```
 
 
 

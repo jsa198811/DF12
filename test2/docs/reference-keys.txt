@@ -43,3 +43,6 @@ supuestos-de-una-arima
 media-cero-de-los-residuos
 independencia-de-los-residuos
 distribución
+modelo-de-hw-y-suavizamiento
+modelo-de-holt-winters
+suavizamiento-exponencial-simple
