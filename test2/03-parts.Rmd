@@ -31,7 +31,7 @@ c220i.ts <- diff(c220.ts, lag = 1)
 ```
 
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(TSA)
 
@@ -47,7 +47,7 @@ Como se puede observar, salvo algunas pocas excepciones, las formas generales de
 Con todo, se realiza la descomposición de los componentes de la serie de tiempo: nivel, tendencia y estacionalidad, como se observa a continación.
 
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 plot(fitted(modelo_HW), main="Descomposición con HV", xlab="Año", ylab="Dif. Casos")
 
@@ -60,14 +60,14 @@ Si bien la componente de estacionalidad es un tanto irregular, en general, se co
 A partir de todo lo anterior, se procedió a realizar un pronóstico de la cantidad de casos de dengue grave de los primeros tres meses del año 2022. 
 
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 pred=predict(modelo_HW, 3, prediction.interval = TRUE)
 pred
 
 ```
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 plot(modelo_HW, pred)
 
@@ -80,23 +80,32 @@ El alcance del análisis hasta este punto no incluye la evaluación de la calida
 
 ## Suavizamiento Exponencial Simple
 
-Un segundo recurso que se utilizó fue el Suavizado Exponencial Simple. En este caso, se procedió a realizar algunso cálculos, pero quedó pendiente para las siguientes unidades el desarrollo detallado del mismo.
+Una segunda técnica a la que se recurrió fue el Suavizado Exponencial Simple. Este también es un recurso muy popular para el ajuste de series de tiempo.
+
+En términos generales, esta técnica asigna un mayor peso a las observaciones más recientes, lo cual podría reflejar la idea de que tienen más relevancia para las predicciones futuras. En caso de que esta fuera una presuposición acertada, el modelo sería prometedor porque podría responder rápidamente a los cambios de patrones en los datos.
+
+En este caso, se procedió a realizar algunso cálculos, pero quedó pendiente para las siguientes unidades el desarrollo detallado del mismo.
 
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(forecast)
 
 ```
 
 
-```{r}
+A continuación se ajusta un modelo de suavización exponencial simple de la serie de tiempo preparada a partir del operación diferencia aplicado a los casos de Dengue Grave. Se fija el parámetro h para realizar una predicción para un solo periodo futuro. El resultado pronosticado se para el próximo valor de la serie se presenta junto a los intérvalos de confianza del 80% y 95%.
+
+
+
+```{r message=FALSE, warning=FALSE}
 
 fit_sesl <- ses(c220i.ts, h=1, initial = "simple", alpha = 0.1)
 fit_sesl
 
 ```
 
+También se presenta el resumen del modelo, incluyendo las medidas de error, las cuales podrán ser útiles para comparar su desempeño respecto a otras alternativas, cuando llegue el momento.
 
 ```{r}
 

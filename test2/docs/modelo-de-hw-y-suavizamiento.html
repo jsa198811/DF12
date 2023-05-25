@@ -248,47 +248,31 @@ div.csl-indent {
 <p>Para comenzar, el modelo Holt-Winters es una técnica muy utilizada en el pronóstico de series de tiempo. Parece un recurso particularmente adecuado para el análisis de los casos de Dengue Grave, porque se trata de un conjunto de datos que corresponde a una ventana de tiempo relativamente pequeña. Además, los procesos de vigilancia epidemiológica típicamente se valen de pronósticos a corto plazo, por lo cual, algunas de las fortalezas del modelo Holt-Winter pueden ser útiles para predecir valores futuros de contagio a partir de las tendencias y patrones pasados.</p>
 <p>A continuación se presenta el modelo ajustado a partir de la serie de tiempo que se creó utilizando el operador diferencia. Se seleccionó la componente estacional aditiva, pensando en que podría ser una elección adecuada dados los hallazgos preliminares de una cierta concentración de casos en los primeros meses del año, presumiblemente debido a factores ambientales, de modo que esta opción permitiría separar claramente la tendencia de los patrones estacionales de la serie de tiempo.</p>
 <p>A partir de lo anterior, se encontraron los parámetros alpha, beta y gamma para dar peso a los valores pasados, a la tendencia y a la estacionalidad de los pronósticos.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modelo-de-hw-y-suavizamiento.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(TSA)</span></code></pre></div>
-<pre><code>## 
-## Attaching package: &#39;TSA&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     acf, arima</code></pre>
-<pre><code>## The following object is masked from &#39;package:utils&#39;:
-## 
-##     tar</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="modelo-de-hw-y-suavizamiento.html#cb5-1" aria-hidden="true" tabindex="-1"></a>modelo_HW <span class="ot">=</span> <span class="fu">HoltWinters</span>(c220i.ts, <span class="at">seasonal =</span> <span class="st">&quot;additive&quot;</span>)</span>
-<span id="cb5-2"><a href="modelo-de-hw-y-suavizamiento.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_HW, <span class="at">main=</span><span class="st">&quot;Ajuste con Holt-Winters&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Año&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;Diferencia de casos&quot;</span>)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Como se puede observar, salvo algunas pocas excepciones, las formas generales de las dos series no son parecidas. De modo que los puntos ajustados del modelo no siguen de manera precisa las tendencias y patrones de la serie de casos de Dengue Grave.</p>
 <p>Con todo, se realiza la descomposición de los componentes de la serie de tiempo: nivel, tendencia y estacionalidad, como se observa a continación.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="modelo-de-hw-y-suavizamiento.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(modelo_HW), <span class="at">main=</span><span class="st">&quot;Descomposición con HV&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Año&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;Dif. Casos&quot;</span>)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Si bien la componente de estacionalidad es un tanto irregular, en general, se confirma que el inicio de cada año presenta un repunte importante respecto a los valores de otros periodos. Además, aunque la data cruda no permitía identificarlo con claridad, las transformaciones y procedimientos aplicados permiten ver una cierta tendencia al alza en los casos de dengue grave.</p>
 <p>A partir de todo lo anterior, se procedió a realizar un pronóstico de la cantidad de casos de dengue grave de los primeros tres meses del año 2022.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="modelo-de-hw-y-suavizamiento.html#cb7-1" aria-hidden="true" tabindex="-1"></a>pred<span class="ot">=</span><span class="fu">predict</span>(modelo_HW, <span class="dv">3</span>, <span class="at">prediction.interval =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-2"><a href="modelo-de-hw-y-suavizamiento.html#cb7-2" aria-hidden="true" tabindex="-1"></a>pred</span></code></pre></div>
 <pre><code>##                 fit      upr       lwr
 ## Jan 2022  0.4836529 2.929509 -1.962204
 ## Feb 2022  0.8027942 3.251083 -1.645494
 ## Mar 2022 -1.0709187 1.380271 -3.522108</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="modelo-de-hw-y-suavizamiento.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_HW, pred)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>El alcance del análisis hasta este punto no incluye la evaluación de la calidad de este pronóstico. Sin embargo, en caso de lograr un buen ajuste, se trataría de un insumo útil para tomar de decisiones oportunas relacionadas, por ejemplo, con las medidas de respuesta necesarias ante el escenario de un brote de Dengue Grave.</p>
 </div>
 <div id="suavizamiento-exponencial-simple" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Suavizamiento Exponencial Simple<a href="modelo-de-hw-y-suavizamiento.html#suavizamiento-exponencial-simple" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Un segundo recurso que se utilizó fue el Suavizado Exponencial Simple. En este caso, se procedió a realizar algunso cálculos, pero quedó pendiente para las siguientes unidades el desarrollo detallado del mismo.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="modelo-de-hw-y-suavizamiento.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code></pre></div>
-<pre><code>## Registered S3 methods overwritten by &#39;forecast&#39;:
-##   method       from
-##   fitted.Arima TSA 
-##   plot.Arima   TSA</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="modelo-de-hw-y-suavizamiento.html#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_sesl <span class="ot">&lt;-</span> <span class="fu">ses</span>(c220i.ts, <span class="at">h=</span><span class="dv">1</span>, <span class="at">initial =</span> <span class="st">&quot;simple&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
-<span id="cb12-2"><a href="modelo-de-hw-y-suavizamiento.html#cb12-2" aria-hidden="true" tabindex="-1"></a>fit_sesl</span></code></pre></div>
+<p>Una segunda técnica a la que se recurrió fue el Suavizado Exponencial Simple. Este también es un recurso muy popular para el ajuste de series de tiempo.</p>
+<p>En términos generales, esta técnica asigna un mayor peso a las observaciones más recientes, lo cual podría reflejar la idea de que tienen más relevancia para las predicciones futuras. En caso de que esta fuera una presuposición acertada, el modelo sería prometedor porque podría responder rápidamente a los cambios de patrones en los datos.</p>
+<p>En este caso, se procedió a realizar algunso cálculos, pero quedó pendiente para las siguientes unidades el desarrollo detallado del mismo.</p>
+<p>A continuación se ajusta un modelo de suavización exponencial simple de la serie de tiempo preparada a partir del operación diferencia aplicado a los casos de Dengue Grave. Se fija el parámetro h para realizar una predicción para un solo periodo futuro. El resultado pronosticado se para el próximo valor de la serie se presenta junto a los intérvalos de confianza del 80% y 95%.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="modelo-de-hw-y-suavizamiento.html#cb2-1" aria-hidden="true" tabindex="-1"></a>fit_sesl <span class="ot">&lt;-</span> <span class="fu">ses</span>(c220i.ts, <span class="at">h=</span><span class="dv">1</span>, <span class="at">initial =</span> <span class="st">&quot;simple&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
+<span id="cb2-2"><a href="modelo-de-hw-y-suavizamiento.html#cb2-2" aria-hidden="true" tabindex="-1"></a>fit_sesl</span></code></pre></div>
 <pre><code>##          Point Forecast     Lo 80    Hi 80     Lo 95    Hi 95
 ## Jan 2022    -0.02301473 -1.504589 1.458559 -2.288887 2.242857</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="modelo-de-hw-y-suavizamiento.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_sesl)</span></code></pre></div>
+<p>También se presenta el resumen del modelo, incluyendo las medidas de error, las cuales podrán ser útiles para comparar su desempeño respecto a otras alternativas, cuando llegue el momento.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="modelo-de-hw-y-suavizamiento.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_sesl)</span></code></pre></div>
 <pre><code>## 
 ## Forecast method: Simple exponential smoothing
 ## 
