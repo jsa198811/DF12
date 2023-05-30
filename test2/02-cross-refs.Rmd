@@ -49,7 +49,7 @@ En este caso el valor de probabilidad obtenido es menor que el nivel de signific
 
 Para avanzar sobre el análisis de autocorrelación y estacionalidad de la serie de tiempo se emplean las funciones de autocorrelación (ACF) y autocorrelación parcial (PACF).
 
-Como se muestra a continuación, los resultados obtenidos no parecen ser especialmente significativos, porque presentan patrones especialmente destacables y no se presenta ciclos evidentes. Todo esto pareciera resaltar cierta independencia de los valores que toma la variable a lo largo del tiempouna vez más la particularidad de la serie de tiempo, aun después de las transformaciones realizadas hasta ahora. 
+Como se muestra a continuación, los resultados obtenidos no parecen ser especialmente significativos, porque no presentan patrones especialmente destacables y no se presenta ciclos evidentes. Todo esto pareciera resaltar cierta independencia de los valores que toma la variable a lo largo del tiempo, resaltando una vez más la particularidad de la serie de tiempo, aún después de las transformaciones realizadas hasta ahora. 
 
 ### ACF
 
