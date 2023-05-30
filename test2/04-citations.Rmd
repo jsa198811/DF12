@@ -1,15 +1,205 @@
-# Footnotes and citations 
+# Metodología Box-Jenkins
 
-## Footnotes
-
-Footnotes are put inside the square brackets after a caret `^[]`. Like this one ^[This is a footnote.]. 
-
-## Citations
-
-Reference items in your bibliography file(s) using `@key`.
-
-For example, we are using the **bookdown** package [@R-bookdown] (check out the last code chunk in index.Rmd to see how this citation key was added) in this sample book, which was built on top of R Markdown and **knitr** [@xie2015] (this citation was added manually in an external file book.bib). 
-Note that the `.bib` files need to be listed in the index.Rmd with the YAML `bibliography` key.
+Esta metodología incluye los siguientes pasos:
+- Visualizar la serie.
+- Transformarla en estacionaria.
+- Graficar ACF-PACF.
+- Construir el modelo.
+- Hacer la predicción.
 
 
-The RStudio Visual Markdown Editor can also make it easier to insert citations: <https://rstudio.github.io/visual-markdown-editing/#/citations>
+A continuación se desarrollan cada uno de los pasos para la serie del Dengue Grave en Cali.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(tseries)
+library(readxl)
+library(dplyr)
+
+data <- read_excel("~/0. MCD/3/TS/unidad 2/data.xlsx", sheet = "220m")
+
+data$date <- as.Date(data$date,format = "%d/%m/%Y")
+
+attach(data)
+
+c220.ts <- ts(sqrt(c220), start = c(2015,1), frequency=12)
+
+c220i.ts <- diff(c220.ts, lag = 1)
+
+```
+
+
+```{r warning=FALSE, include=FALSE, paged.print=FALSE}
+
+library(forecast)
+library(tseries)
+library(timsac)
+library(ggplot2)
+library(changepoint)
+
+```
+
+
+## Visualizar la serie
+
+En primer lugar, retomaremos la serie original que es el objeto de este análisis, es decir, la cantidad de casos de Dengue Grave en Cali.
+
+```{r fig11, echo=FALSE, fig.align='center', fig.asp=.75, message=FALSE, warning=FALSE, out.width='80%'}
+
+library(ggplot2)
+library(hrbrthemes)
+
+hrbrthemes::import_roboto_condensed()
+
+ggplot(data, aes(x = date, y = c220)) + 
+  geom_line(color="deepskyblue", size=1, alpha=0.9) + 
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=11)
+    ) +
+    ggtitle("Casos de Dengue Grave 2015-2022") +
+    xlab("Fecha")
+
+```
+
+## Transformarla en estacionaria
+
+```{r}
+
+df_c220i <- data.frame(date = time(c220i.ts), value = as.vector(c220i.ts))
+
+```
+
+
+Respecto a la transformación a una serie estacionaria, vale la pena retomar la serie creada en secciones anteriores a partir del uso del operador diferencia con el rezago de 1 periodo.
+
+
+```{r fig12, echo=FALSE, fig.align='center', fig.asp=.75, message=FALSE, warning=FALSE, out.width='80%'}
+
+library(ggplot2)
+library(hrbrthemes)
+
+hrbrthemes::import_roboto_condensed()
+
+ggplot(df_c220i, aes(x = date, y = value)) + 
+  geom_line(color="deepskyblue", size=1, alpha=0.9) + 
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=11)
+    ) +
+    ggtitle("TS transformada Casos de Dengue Grave 2015-2022") +
+    xlab("Fecha")
+
+```
+
+## Graficar ACF - PACF
+
+A continuación se emplean las funciones de autocorrelación (ACF) y autocorrelación parcial (PACF). Los resultados indican la independencia de los valores de variable a lo largo del tiempo. 
+
+### ACF
+
+```{r fig13, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+
+acf(c220i.ts)
+
+```
+
+
+### PACF
+
+```{r fig14, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+
+pacf(c220i.ts)
+
+```
+
+
+
+## Construir el modelo
+
+A continuación se aplica la función auto.arima para encontrar un modelo ARIMA de ajuste eficiente.
+
+```{r}
+
+library(forecast)
+
+#Aplicar un modelo ARIMA automático a la TS
+fit <- auto.arima(c220i.ts)
+
+summary(fit)
+
+```
+
+
+Como se había señalado antes, en este caso el resultado indica que se trata de un modelo de media móvil de orden 1 sin término autoregresivo ni diferenciación y con media cero.
+
+
+
+
+### Puntos de cambio
+
+También se buscó identificar puntos de cambio significativos en la serie de tiempo, pero no se evidenció ninguno, como se observa a continuación.
+
+```{r fig15, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+
+library(changepoint)
+
+# Aplicar la función cpt.mean() a la serie de tiempo
+cpt_obj <- cpt.mean(c220i.ts, method = "AMOC")
+
+# Mostrar los resultados
+plot(cpt_obj)
+
+```
+
+
+
+
+## Hacer predicción
+
+
+### Predicción
+
+Se realizó un pronóstico del valor de un mes futuro. La gráfica presenta el valor predicho y los intérvalos de confianza.
+
+
+```{r fig16, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+
+library(forecast)
+
+# Hacer predicciones para los próximos meses
+fc <- forecast(c220i.ts, h=1)
+
+
+# Mostrar las predicciones y los intervalos de confianza
+plot(fc)
+
+```
+
+
+
+### Validación
+
+A continuación se presenta el resultado del procedimiento realizado para detectar los valores atípicos de la serie de tiempo.
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tsoutliers)
+
+dat.ts<- ts(c220i.ts,frequency=1)
+data.ts.outliers <- tso(dat.ts)
+data.ts.outliers
+
+```
+
+
+```{r fig17, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+
+plot(data.ts.outliers)
+
+```
+
+
+La gráfica presenta los tres valores que difieren significativamente del patrón general de la serie de tiempo.

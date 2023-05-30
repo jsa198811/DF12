@@ -46,3 +46,14 @@ distribución
 modelo-de-hw-y-suavizamiento
 modelo-de-holt-winters
 suavizamiento-exponencial-simple
+metodología-box-jenkins
+visualizar-la-serie
+transformarla-en-estacionaria
+graficar-acf---pacf
+acf-1
+pacf-1
+construir-el-modelo
+puntos-de-cambio-1
+hacer-predicción
+predicción-1
+validación-1
