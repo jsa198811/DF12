@@ -199,7 +199,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.5.2" data-path="metodología-box-jenkins.html"><a href="metodología-box-jenkins.html#validación-1"><i class="fa fa-check"></i><b>5.5.2</b> Validación</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="modelo-facebook-prophet.html"><a href="modelo-facebook-prophet.html"><i class="fa fa-check"></i><b>6</b> Modelo Facebook Prophet</a></li>
+<li class="chapter" data-level="6" data-path="modelo-facebook-prophet.html"><a href="modelo-facebook-prophet.html"><i class="fa fa-check"></i><b>6</b> Modelo Facebook Prophet</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="modelo-facebook-prophet.html"><a href="modelo-facebook-prophet.html#regresión-univariada"><i class="fa fa-check"></i><b>6.1</b> Regresión Univariada</a></li>
+<li class="chapter" data-level="6.2" data-path="modelo-facebook-prophet.html"><a href="modelo-facebook-prophet.html#regresión-multivariada"><i class="fa fa-check"></i><b>6.2</b> Regresión Multivariada</a></li>
+<li class="chapter" data-level="6.3" data-path="modelo-facebook-prophet.html"><a href="modelo-facebook-prophet.html#conclusión-sobre-regresión"><i class="fa fa-check"></i><b>6.3</b> Conclusión sobre regresión</a></li>
+</ul></li>
 <li class="chapter" data-level="7" data-path="sharing-your-book.html"><a href="sharing-your-book.html"><i class="fa fa-check"></i><b>7</b> Sharing your book</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="sharing-your-book.html"><a href="sharing-your-book.html#publishing"><i class="fa fa-check"></i><b>7.1</b> Publishing</a></li>
@@ -238,6 +243,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-3"><a href="modelo-facebook-prophet.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividir los datos en entrenamiento y prueba</span></span>
 <span id="cb2-4"><a href="modelo-facebook-prophet.html#cb2-4" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> df[df<span class="sc">$</span>ds <span class="sc">&lt;</span> <span class="st">&#39;2021-11-01&#39;</span>, ]  </span>
 <span id="cb2-5"><a href="modelo-facebook-prophet.html#cb2-5" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> df[df<span class="sc">$</span>ds <span class="sc">&gt;=</span> <span class="st">&#39;2021-11-01&#39;</span>, ] </span></code></pre></div>
+<div id="regresión-univariada" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Regresión Univariada<a href="modelo-facebook-prophet.html#regresión-univariada" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Se ajustan dos modelos: un modelo ARIMA y el otro basado en el algoritmo Prophet.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="modelo-facebook-prophet.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar un modelo ARIMA</span></span>
 <span id="cb3-2"><a href="modelo-facebook-prophet.html#cb3-2" aria-hidden="true" tabindex="-1"></a>model_arima <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_data<span class="sc">$</span>y)</span>
@@ -253,8 +260,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="modelo-facebook-prophet.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar pronósticos con el modelo Prophet</span></span>
 <span id="cb6-2"><a href="modelo-facebook-prophet.html#cb6-2" aria-hidden="true" tabindex="-1"></a>forecast_prophet <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_prophet, test_data, <span class="at">freq =</span> <span class="st">&#39;month&#39;</span>)</span></code></pre></div>
 <p>Se observa el pronóstico del modelo Prophet, incluyendo un intérvalo de confianza.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="modelo-facebook-prophet.html#cb7-1" aria-hidden="true" tabindex="-1"></a>forecast <span class="ot">=</span> <span class="fu">predict</span>(model_prophet, forecast_prophet)</span>
-<span id="cb7-2"><a href="modelo-facebook-prophet.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_prophet, forecast)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Se calculan las métricas de desempeño para los dos modelos.</p>
 <pre><code>##     Model        MAE       RMSE
@@ -264,8 +269,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>A continuación se presenta una gráfica de los pronósticos de los dos modelos.</p>
 <p><img src="tes2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Aquí se validaría la necesidad de incorporar otras variables predictoras, de modo que se pueda aprovechar más las capacidades del algoritmo Prophet.</p>
-<p>En todo caso, hasta este punto se podría decir que después de someterse a un proceso de manipulación efectiva, los registros de Casos de Dengue Grave en Cali se convierten en una serie de tiempo viable para utilizar el enfoque de regresión, toda vez que no representa una variable categórica y presenta una dinámica estacionaria.</p>
+</div>
+<div id="regresión-multivariada" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Regresión Multivariada<a href="modelo-facebook-prophet.html#regresión-multivariada" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Después de realizar un preprocesamiento similar al aplicado para la variable de respuesta, se procede a incorporarlas tres variables predictoras en los dos modelos. Las covariables seleccionadas están basadas en los trabajos previos a nivel internacional, los cuales validan la relevancia de los datos de lluvia, temperatura y precipitaciones para la predicción de los casos de dengue.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="modelo-facebook-prophet.html#cb8-1" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">prophet</span>()</span>
+<span id="cb8-2"><a href="modelo-facebook-prophet.html#cb8-2" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">add_regressor</span>(model_prophet, <span class="st">&quot;hum&quot;</span>)</span>
+<span id="cb8-3"><a href="modelo-facebook-prophet.html#cb8-3" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">add_regressor</span>(model_prophet, <span class="st">&quot;rain&quot;</span>)</span>
+<span id="cb8-4"><a href="modelo-facebook-prophet.html#cb8-4" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">add_regressor</span>(model_prophet, <span class="st">&quot;temp&quot;</span>)</span>
+<span id="cb8-5"><a href="modelo-facebook-prophet.html#cb8-5" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">fit.prophet</span>(model_prophet, train_data)</span></code></pre></div>
+<pre><code>## Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
+<pre><code>## Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="modelo-facebook-prophet.html#cb11-1" aria-hidden="true" tabindex="-1"></a>forecast_prophet <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_prophet, test_data, <span class="at">freq =</span> <span class="st">&#39;month&#39;</span>)</span></code></pre></div>
+<pre><code>##     Model        MAE      RMSE
+## 1   ARIMA 0.20100128 0.2379388
+## 2 Prophet 0.01893571 0.0228082</code></pre>
+<p>Como se puede observar, en este caso el desempeño del modelo Prophet supera con creces el obtenido por el modelo Arima. Esto confirma la relevancia de la inclusión de las covariables precipitación, lluvia y temperatura.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="conclusión-sobre-regresión" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Conclusión sobre regresión<a href="modelo-facebook-prophet.html#conclusión-sobre-regresión" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Llegado este punto, se podría decir que después de realizar un proceso de manipulación efectiva, los registros de Casos de Dengue Grave en Cali se convierten en una serie de tiempo viable para utilizar los enfoques de regresión, toda vez que no representa una variable categórica, evidencia una dinámica estacionaria, se evidencia una relación continua con las variables predictoras, de modo que los cambios en las covariables están relacionados con los cambios en la cantidad de casos de dengue grave, y el desempeño logrado, especialmente por el algoritmo Prophet resulta satisfactorio.</p>
 
+</div>
 </div>
             </section>
 

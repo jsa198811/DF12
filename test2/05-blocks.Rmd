@@ -69,6 +69,7 @@ new_data$ds <- as.Date(new_data$ds)
 ```
 
 
+
 Para comenzar, se retoma la gráfica de la variable de Casos de Dengue Grave transformada a través del operador diferencia y rezagada un periodo.
 
 
@@ -91,6 +92,8 @@ test_data <- df[df$ds >= '2021-11-01', ]
 ```
 
 
+## Regresión Univariada
+
 Se ajustan dos modelos: un modelo ARIMA y el otro basado en el algoritmo Prophet.
 
 ```{r}
@@ -112,7 +115,7 @@ forecast_prophet <- predict(model_prophet, test_data, freq = 'month')
 
 Se observa el pronóstico del modelo Prophet, incluyendo un intérvalo de confianza.
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 forecast = predict(model_prophet, forecast_prophet)
 plot(model_prophet, forecast)
 ```
@@ -141,9 +144,6 @@ accuracy_prophet <- data.frame(
 metrics_table <- rbind(accuracy_arima, accuracy_prophet)
 
 print(metrics_table)
-
-
-
 
 
 
@@ -185,8 +185,95 @@ ggplot(forecast_data, aes(x = ds)) +
 
 Aquí se validaría la necesidad de incorporar otras variables predictoras, de modo que se pueda aprovechar más las capacidades del algoritmo Prophet.
 
-En todo caso, hasta este punto se podría decir que después de someterse a un proceso de manipulación efectiva, los registros de Casos de Dengue Grave en Cali se convierten en una serie de tiempo viable para utilizar el enfoque de regresión, toda vez que no representa una variable categórica y presenta una dinámica estacionaria.
 
 
 
+## Regresión Multivariada
 
+Después de realizar un preprocesamiento similar al aplicado para la variable de respuesta, se procede a incorporarlas tres variables predictoras en los dos modelos. Las covariables seleccionadas están basadas en los trabajos previos a nivel internacional, los cuales validan la relevancia de los datos de lluvia, temperatura y precipitaciones para la predicción de los casos de dengue.
+
+
+```{r include=FALSE}
+additional_vars <- train_data[, c("hum", "rain", "temp")]
+additional_vars <- as.matrix(additional_vars)
+
+model_arima <- auto.arima(train_data$y, xreg = additional_vars)
+forecast_arima <- forecast(model_arima, h = nrow(test_data), xreg = as.matrix(test_data[, c("hum", "rain", "temp")]))
+```
+
+
+```{r}
+model_prophet <- prophet()
+model_prophet <- add_regressor(model_prophet, "hum")
+model_prophet <- add_regressor(model_prophet, "rain")
+model_prophet <- add_regressor(model_prophet, "temp")
+model_prophet <- fit.prophet(model_prophet, train_data)
+forecast_prophet <- predict(model_prophet, test_data, freq = 'month')
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+accuracy_arima <- data.frame(
+  Model = "ARIMA",
+  MAE = Metrics::mae(test_data$y, forecast_arima$mean),
+  RMSE = Metrics::rmse(test_data$y, forecast_arima$mean)
+)
+
+accuracy_prophet <- data.frame(
+  Model = "Prophet",
+  MAE = mean(abs(test_data$y - forecast_prophet$yhat)),
+  RMSE = sqrt(mean((test_data$y - forecast_prophet$yhat)^2))
+)
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+metrics_table <- rbind(accuracy_arima, accuracy_prophet)
+print(metrics_table)
+
+forecast_data <- data.frame(
+  ds = test_data$ds,
+  y = test_data$y,
+  ARIMA = forecast_arima$mean,
+  Prophet = forecast_prophet$yhat)
+
+```
+
+Como se puede observar, en este caso el desempeño del modelo Prophet supera con creces el obtenido por el modelo Arima. Esto confirma la relevancia de la inclusión de las covariables precipitación, lluvia y temperatura.
+
+
+
+```{r echo=FALSE}
+
+library(ggplot2)
+
+# Crear un dataframe con los datos originales y los pronósticos de los dos modelos
+forecast_data <- data.frame(
+  ds = test_data$ds,
+  y = test_data$y,
+  ARIMA = forecast_arima$mean,
+  Prophet = forecast_prophet$yhat
+)
+
+# Convertir la columna 'ds' al formato de fecha
+forecast_data$ds <- as.Date(forecast_data$ds)
+
+# Graficar la serie original y los pronósticos
+ggplot(forecast_data, aes(x = ds)) +
+  geom_line(aes(y = y, color = "Original"), linetype = "solid") +
+  geom_line(aes(y = ARIMA, color = "ARIMA"), linetype = "dashed") +
+  geom_line(aes(y = Prophet, color = "Prophet"), linetype = "dotted") +
+  labs(title = "Comparación de Pronósticos",
+       x = "Fecha",
+       y = "Valor") +
+  scale_color_manual(values = c("Original" = "black", "ARIMA" = "blue", "Prophet" = "red")) +
+  theme_minimal()
+```
+
+
+
+## Conclusión sobre regresión
+
+Llegado este punto, se podría decir que después de realizar un proceso de manipulación efectiva, los registros de Casos de Dengue Grave en Cali se convierten en una serie de tiempo viable para utilizar los enfoques de regresión, toda vez que no representa una variable categórica, evidencia una dinámica estacionaria, se evidencia una relación continua con las variables predictoras, de modo que los cambios en las covariables están relacionados con los cambios en la cantidad de casos de dengue grave, y el desempeño logrado, especialmente por el algoritmo Prophet resulta satisfactorio.
