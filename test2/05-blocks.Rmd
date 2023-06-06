@@ -1,5 +1,9 @@
 # Modelo Facebook Prophet
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment = NA)
+```
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(tseries)

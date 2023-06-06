@@ -54,70 +54,6 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
-<style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
 
 <style type="text/css">
   
@@ -235,36 +171,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="modelo-facebook-prophet" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter 6</span> Modelo Facebook Prophet<a href="modelo-facebook-prophet.html#modelo-facebook-prophet" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Para comenzar, se retoma la gráfica de la variable de Casos de Dengue Grave transformada a través del operador diferencia y rezagada un periodo.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modelo-facebook-prophet.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(c220i.ts)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Ahora, se realiza una partición de la serie para contar con un subconjunto de prueba y otro de entrenamiento. Se eligió realizar un pronóstico de corto plazo, dada la variabildad histórica y los elementos de contexto de la vigilancia epidemiológica.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="modelo-facebook-prophet.html#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> new_data</span>
-<span id="cb2-2"><a href="modelo-facebook-prophet.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="modelo-facebook-prophet.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividir los datos en entrenamiento y prueba</span></span>
-<span id="cb2-4"><a href="modelo-facebook-prophet.html#cb2-4" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> df[df<span class="sc">$</span>ds <span class="sc">&lt;</span> <span class="st">&#39;2021-11-01&#39;</span>, ]  </span>
-<span id="cb2-5"><a href="modelo-facebook-prophet.html#cb2-5" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> df[df<span class="sc">$</span>ds <span class="sc">&gt;=</span> <span class="st">&#39;2021-11-01&#39;</span>, ] </span></code></pre></div>
 <div id="regresión-univariada" class="section level2 hasAnchor" number="6.1">
 <h2><span class="header-section-number">6.1</span> Regresión Univariada<a href="modelo-facebook-prophet.html#regresión-univariada" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Se ajustan dos modelos: un modelo ARIMA y el otro basado en el algoritmo Prophet.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="modelo-facebook-prophet.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar un modelo ARIMA</span></span>
-<span id="cb3-2"><a href="modelo-facebook-prophet.html#cb3-2" aria-hidden="true" tabindex="-1"></a>model_arima <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_data<span class="sc">$</span>y)</span>
-<span id="cb3-3"><a href="modelo-facebook-prophet.html#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="modelo-facebook-prophet.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar pronósticos con el modelo ARIMA</span></span>
-<span id="cb3-5"><a href="modelo-facebook-prophet.html#cb3-5" aria-hidden="true" tabindex="-1"></a>forecast_arima <span class="ot">&lt;-</span> <span class="fu">forecast</span>(model_arima, <span class="at">h =</span> <span class="fu">nrow</span>(test_data))</span>
-<span id="cb3-6"><a href="modelo-facebook-prophet.html#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="modelo-facebook-prophet.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar un modelo Prophet y agregar estacionalidad</span></span>
-<span id="cb3-8"><a href="modelo-facebook-prophet.html#cb3-8" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">prophet</span>()</span>
-<span id="cb3-9"><a href="modelo-facebook-prophet.html#cb3-9" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">fit.prophet</span>(model_prophet, train_data)</span></code></pre></div>
-<pre><code>## Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
-<pre><code>## Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="modelo-facebook-prophet.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar pronósticos con el modelo Prophet</span></span>
-<span id="cb6-2"><a href="modelo-facebook-prophet.html#cb6-2" aria-hidden="true" tabindex="-1"></a>forecast_prophet <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_prophet, test_data, <span class="at">freq =</span> <span class="st">&#39;month&#39;</span>)</span></code></pre></div>
+<pre><code>Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
+<pre><code>Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
 <p>Se observa el pronóstico del modelo Prophet, incluyendo un intérvalo de confianza.</p>
 <p><img src="tes2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Se calculan las métricas de desempeño para los dos modelos.</p>
-<pre><code>##     Model        MAE       RMSE
-## 1   ARIMA 0.06609547 0.09347311
-## 2 Prophet 0.10732330 0.11193692</code></pre>
+<pre><code>    Model        MAE       RMSE
+1   ARIMA 0.06609547 0.09347311
+2 Prophet 0.10732330 0.11193692</code></pre>
 <p>En este caso, sorprende que el que tenga mejor comportamiento sea el modelo ARIMA. En otras prubas realizadas en la etapa de preparación, el modelo Prophet tuvo un mejor desempeño, aunque por poco.</p>
 <p>A continuación se presenta una gráfica de los pronósticos de los dos modelos.</p>
 <p><img src="tes2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
@@ -273,17 +192,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="regresión-multivariada" class="section level2 hasAnchor" number="6.2">
 <h2><span class="header-section-number">6.2</span> Regresión Multivariada<a href="modelo-facebook-prophet.html#regresión-multivariada" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Después de realizar un preprocesamiento similar al aplicado para la variable de respuesta, se procede a incorporarlas tres variables predictoras en los dos modelos. Las covariables seleccionadas están basadas en los trabajos previos a nivel internacional, los cuales validan la relevancia de los datos de lluvia, temperatura y precipitaciones para la predicción de los casos de dengue.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="modelo-facebook-prophet.html#cb8-1" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">prophet</span>()</span>
-<span id="cb8-2"><a href="modelo-facebook-prophet.html#cb8-2" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">add_regressor</span>(model_prophet, <span class="st">&quot;hum&quot;</span>)</span>
-<span id="cb8-3"><a href="modelo-facebook-prophet.html#cb8-3" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">add_regressor</span>(model_prophet, <span class="st">&quot;rain&quot;</span>)</span>
-<span id="cb8-4"><a href="modelo-facebook-prophet.html#cb8-4" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">add_regressor</span>(model_prophet, <span class="st">&quot;temp&quot;</span>)</span>
-<span id="cb8-5"><a href="modelo-facebook-prophet.html#cb8-5" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">fit.prophet</span>(model_prophet, train_data)</span></code></pre></div>
-<pre><code>## Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
-<pre><code>## Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="modelo-facebook-prophet.html#cb11-1" aria-hidden="true" tabindex="-1"></a>forecast_prophet <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_prophet, test_data, <span class="at">freq =</span> <span class="st">&#39;month&#39;</span>)</span></code></pre></div>
-<pre><code>##     Model        MAE      RMSE
-## 1   ARIMA 0.20100128 0.2379388
-## 2 Prophet 0.01893571 0.0228082</code></pre>
+<pre><code>Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
+<pre><code>Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
+<pre><code>    Model        MAE      RMSE
+1   ARIMA 0.20100128 0.2379388
+2 Prophet 0.01893571 0.0228082</code></pre>
 <p>Como se puede observar, en este caso el desempeño del modelo Prophet supera con creces el obtenido por el modelo Arima. Esto confirma la relevancia de la inclusión de las covariables precipitación, lluvia y temperatura.</p>
 <p><img src="tes2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
