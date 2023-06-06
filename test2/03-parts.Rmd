@@ -12,6 +12,10 @@ A continuación se presenta el modelo ajustado a partir de la serie de tiempo qu
 
 A partir de lo anterior, se encontraron los parámetros alpha, beta y gamma para dar peso a los valores pasados, a la tendencia y a la estacionalidad de los pronósticos.
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment = NA)
+```
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(tseries)

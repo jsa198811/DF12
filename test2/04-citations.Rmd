@@ -10,6 +10,11 @@ Esta metodología incluye los siguientes pasos:
 
 A continuación se desarrollan cada uno de los pasos para la serie del Dengue Grave en Cali.
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment = NA)
+```
+
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 library(tseries)

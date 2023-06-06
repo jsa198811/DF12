@@ -1,30 +1,125 @@
-# Blocks
+# Modelo Facebook Prophet
 
-## Equations
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
-Here is an equation.
-
-\begin{equation} 
-  f\left(k\right) = \binom{n}{k} p^k\left(1-p\right)^{n-k}
-  (\#eq:binom)
-\end{equation} 
-
-You may refer to using `\@ref(eq:binom)`, like see Equation \@ref(eq:binom).
-
-
-## Theorems and proofs
-
-Labeled theorems can be referenced in text using `\@ref(thm:tri)`, for example, check out this smart theorem \@ref(thm:tri).
-
-::: {.theorem #tri}
-For a right triangle, if $c$ denotes the *length* of the hypotenuse
-and $a$ and $b$ denote the lengths of the **other** two sides, we have
-$$a^2 + b^2 = c^2$$
-:::
-
-Read more here <https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html>.
-
-## Callout blocks
+library(tseries)
+library(readxl)
+library(dplyr)
+library(forecast)
+library(ggplot2)
+library(fpp3)
+library(fable)
+library(fabletools)
+library(fable.prophet)
+library(tsibble)
+library(fpp3)
+library(prophet)
 
 
-The R Markdown Cookbook provides more help on how to use custom blocks to design your own callouts: https://bookdown.org/yihui/rmarkdown-cookbook/custom-blocks.html
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+data <- read_excel("~/0. MCD/3/TS/unidad 2/data.xlsx", sheet = "220m")
+
+data$date <- as.Date(data$date,format = "%Y/%m/%d")
+
+attach(data)
+
+c220.ts <- ts(sqrt(c220), start = c(2015,1), frequency=12)
+
+c220i.ts <- diff(c220.ts, lag = 1)
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+humidity.ts <- ts(sqrt(humidity), start = c(2015,1), frequency=12)
+humidity_i.ts <- diff(humidity.ts, lag = 1)
+
+
+rainfall.ts <- ts(sqrt(rainfall), start = c(2015,1), frequency=12)
+rainfall_i.ts <- diff(rainfall.ts, lag = 1)
+
+tmax.ts <- ts(sqrt(tmax), start = c(2015,1), frequency=12)
+tmax_i.ts <- diff(tmax.ts, lag = 1)
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+new_data <- data.frame(
+  ds=data$date[2:84], 
+  y=as.numeric(c220i.ts), 
+  hum=as.numeric(humidity_i.ts), 
+  rain=as.numeric(rainfall_i.ts), 
+  temp=as.numeric(tmax_i.ts))
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+new_data$ds <- format(new_data$ds, "%Y-%m")
+new_data$ds <- paste(new_data$ds, "01", sep = "-")
+new_data$ds <- as.Date(new_data$ds)
+
+```
+
+
+
+
+
+```{r}
+
+autoplot(c220i.ts)
+```
+
+
+```{r}
+
+#filtrar la data para evaluación
+df <- new_data%>%
+  filter(ds<'2021-10-01')
+
+#Inicializar el modelo
+m = prophet(df)
+
+#forecasting
+future = make_future_dataframe(m, periods = 3, freq = 'month')
+forecast = predict(m, future)
+
+plot(m, forecast)
+
+```
+
+
+
+
+
+```{r}
+
+# calcular las metricas de desempeño
+df$y <- as.numeric(df$y) # convertir a valores numéricos
+
+# extraer los valores pronosticados
+predicted <- forecast$yhat[forecast$ds > '2021-10-01']
+
+# extraer los valores reales
+actual <- new_data$y[new_data$ds > '2021-10-01']
+
+
+# Calcular accuracy metrics
+mae <- mean(abs(predicted - actual), na.rm = TRUE)
+rmse <- sqrt(mean((predicted - actual)^2, na.rm = TRUE))
+
+# Imprimir
+cat("MAE:", mae, "\n")
+cat("RMSE:", rmse, "\n")
+
+```
+
