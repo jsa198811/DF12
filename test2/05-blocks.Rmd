@@ -15,8 +15,6 @@ library(tsibble)
 library(fpp3)
 library(prophet)
 
-
-
 ```
 
 
@@ -71,55 +69,124 @@ new_data$ds <- as.Date(new_data$ds)
 ```
 
 
-
+Para comenzar, se retoma la gráfica de la variable de Casos de Dengue Grave transformada a través del operador diferencia y rezagada un periodo.
 
 
 ```{r}
 
 autoplot(c220i.ts)
+
 ```
 
+Ahora, se realiza una partición de la serie para contar con un subconjunto de prueba y otro de entrenamiento. Se eligió realizar un pronóstico de corto plazo, dada la variabildad histórica y los elementos de contexto de la vigilancia epidemiológica.
 
 ```{r}
 
-#filtrar la data para evaluación
-df <- new_data%>%
-  filter(ds<'2021-10-01')
+df <- new_data
 
-#Inicializar el modelo
-m = prophet(df)
-
-#forecasting
-future = make_future_dataframe(m, periods = 3, freq = 'month')
-forecast = predict(m, future)
-
-plot(m, forecast)
+# Dividir los datos en entrenamiento y prueba
+train_data <- df[df$ds < '2021-11-01', ]  
+test_data <- df[df$ds >= '2021-11-01', ] 
 
 ```
 
 
-
-
+Se ajustan dos modelos: un modelo ARIMA y el otro basado en el algoritmo Prophet.
 
 ```{r}
 
-# calcular las metricas de desempeño
-df$y <- as.numeric(df$y) # convertir a valores numéricos
+# Ajustar un modelo ARIMA
+model_arima <- auto.arima(train_data$y)
 
-# extraer los valores pronosticados
-predicted <- forecast$yhat[forecast$ds > '2021-10-01']
+# Generar pronósticos con el modelo ARIMA
+forecast_arima <- forecast(model_arima, h = nrow(test_data))
 
-# extraer los valores reales
-actual <- new_data$y[new_data$ds > '2021-10-01']
+# Ajustar un modelo Prophet y agregar estacionalidad
+model_prophet <- prophet()
+model_prophet <- fit.prophet(model_prophet, train_data)
 
-
-# Calcular accuracy metrics
-mae <- mean(abs(predicted - actual), na.rm = TRUE)
-rmse <- sqrt(mean((predicted - actual)^2, na.rm = TRUE))
-
-# Imprimir
-cat("MAE:", mae, "\n")
-cat("RMSE:", rmse, "\n")
+# Generar pronósticos con el modelo Prophet
+forecast_prophet <- predict(model_prophet, test_data, freq = 'month')
 
 ```
+
+Se observa el pronóstico del modelo Prophet, incluyendo un intérvalo de confianza.
+
+```{r}
+forecast = predict(model_prophet, forecast_prophet)
+plot(model_prophet, forecast)
+```
+
+Se calculan las métricas de desempeño para los dos modelos.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+
+# Calcular las métricas de desempeño para ARIMA
+accuracy_arima <- data.frame(
+  Model = "ARIMA",
+  MAE = Metrics::mae(test_data$y, forecast_arima$mean),
+  RMSE = Metrics::rmse(test_data$y, forecast_arima$mean)
+)
+
+# Calcular las métricas de desempeño para Prophet
+accuracy_prophet <- data.frame(
+  Model = "Prophet",
+  MAE = mean(abs(test_data$y - forecast_prophet$yhat)),
+  RMSE = sqrt(mean((test_data$y - forecast_prophet$yhat)^2))
+)
+
+# Crear tabla de métricas
+metrics_table <- rbind(accuracy_arima, accuracy_prophet)
+
+print(metrics_table)
+
+
+
+
+
+
+```
+
+En este caso, sorprende que el que tenga mejor comportamiento sea el modelo ARIMA. En otras prubas realizadas en la etapa de preparación, el modelo Prophet tuvo un mejor desempeño, aunque por poco.
+
+
+A continuación se presenta una gráfica de los pronósticos de los dos modelos.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(ggplot2)
+
+# Crear un dataframe con los datos originales y los pronósticos de los dos modelos
+forecast_data <- data.frame(
+  ds = test_data$ds,
+  y = test_data$y,
+  ARIMA = forecast_arima$mean,
+  Prophet = forecast_prophet$yhat
+)
+
+# Convertir la columna 'ds' al formato de fecha
+forecast_data$ds <- as.Date(forecast_data$ds)
+
+# Graficar la serie original y los pronósticos
+ggplot(forecast_data, aes(x = ds)) +
+  geom_line(aes(y = y, color = "Original"), linetype = "solid") +
+  geom_line(aes(y = ARIMA, color = "ARIMA"), linetype = "dashed") +
+  geom_line(aes(y = Prophet, color = "Prophet"), linetype = "dotted") +
+  labs(title = "Comparación de Pronósticos",
+       x = "Fecha",
+       y = "Valor") +
+  scale_color_manual(values = c("Original" = "black", "ARIMA" = "blue", "Prophet" = "red")) +
+  theme_minimal()
+
+
+```
+
+Aquí se validaría la necesidad de incorporar otras variables predictoras, de modo que se pueda aprovechar más las capacidades del algoritmo Prophet.
+
+En todo caso, hasta este punto se podría decir que después de someterse a un proceso de manipulación efectiva, los registros de Casos de Dengue Grave en Cali se convierten en una serie de tiempo viable para utilizar el enfoque de regresión, toda vez que no representa una variable categórica y presenta una dinámica estacionaria.
+
+
+
 

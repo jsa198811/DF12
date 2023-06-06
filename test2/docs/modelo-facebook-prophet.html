@@ -23,7 +23,7 @@
 <meta name="author" content="Jefferson Sanchez" />
 
 
-<meta name="date" content="2023-06-05" />
+<meta name="date" content="2023-06-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -229,41 +229,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="modelo-facebook-prophet" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter 6</span> Modelo Facebook Prophet<a href="modelo-facebook-prophet.html#modelo-facebook-prophet" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Para comenzar, se retoma la gráfica de la variable de Casos de Dengue Grave transformada a través del operador diferencia y rezagada un periodo.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modelo-facebook-prophet.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(c220i.ts)</span></code></pre></div>
 <p><img src="tes2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="modelo-facebook-prophet.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#filtrar la data para evaluación</span></span>
-<span id="cb2-2"><a href="modelo-facebook-prophet.html#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> new_data<span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="modelo-facebook-prophet.html#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ds<span class="sc">&lt;</span><span class="st">&#39;2021-10-01&#39;</span>)</span>
-<span id="cb2-4"><a href="modelo-facebook-prophet.html#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="modelo-facebook-prophet.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Inicializar el modelo</span></span>
-<span id="cb2-6"><a href="modelo-facebook-prophet.html#cb2-6" aria-hidden="true" tabindex="-1"></a>m <span class="ot">=</span> <span class="fu">prophet</span>(df)</span></code></pre></div>
+<p>Ahora, se realiza una partición de la serie para contar con un subconjunto de prueba y otro de entrenamiento. Se eligió realizar un pronóstico de corto plazo, dada la variabildad histórica y los elementos de contexto de la vigilancia epidemiológica.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="modelo-facebook-prophet.html#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> new_data</span>
+<span id="cb2-2"><a href="modelo-facebook-prophet.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="modelo-facebook-prophet.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividir los datos en entrenamiento y prueba</span></span>
+<span id="cb2-4"><a href="modelo-facebook-prophet.html#cb2-4" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> df[df<span class="sc">$</span>ds <span class="sc">&lt;</span> <span class="st">&#39;2021-11-01&#39;</span>, ]  </span>
+<span id="cb2-5"><a href="modelo-facebook-prophet.html#cb2-5" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> df[df<span class="sc">$</span>ds <span class="sc">&gt;=</span> <span class="st">&#39;2021-11-01&#39;</span>, ] </span></code></pre></div>
+<p>Se ajustan dos modelos: un modelo ARIMA y el otro basado en el algoritmo Prophet.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="modelo-facebook-prophet.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar un modelo ARIMA</span></span>
+<span id="cb3-2"><a href="modelo-facebook-prophet.html#cb3-2" aria-hidden="true" tabindex="-1"></a>model_arima <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(train_data<span class="sc">$</span>y)</span>
+<span id="cb3-3"><a href="modelo-facebook-prophet.html#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="modelo-facebook-prophet.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar pronósticos con el modelo ARIMA</span></span>
+<span id="cb3-5"><a href="modelo-facebook-prophet.html#cb3-5" aria-hidden="true" tabindex="-1"></a>forecast_arima <span class="ot">&lt;-</span> <span class="fu">forecast</span>(model_arima, <span class="at">h =</span> <span class="fu">nrow</span>(test_data))</span>
+<span id="cb3-6"><a href="modelo-facebook-prophet.html#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="modelo-facebook-prophet.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar un modelo Prophet y agregar estacionalidad</span></span>
+<span id="cb3-8"><a href="modelo-facebook-prophet.html#cb3-8" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">prophet</span>()</span>
+<span id="cb3-9"><a href="modelo-facebook-prophet.html#cb3-9" aria-hidden="true" tabindex="-1"></a>model_prophet <span class="ot">&lt;-</span> <span class="fu">fit.prophet</span>(model_prophet, train_data)</span></code></pre></div>
 <pre><code>## Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
 <pre><code>## Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="modelo-facebook-prophet.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#forecasting</span></span>
-<span id="cb5-2"><a href="modelo-facebook-prophet.html#cb5-2" aria-hidden="true" tabindex="-1"></a>future <span class="ot">=</span> <span class="fu">make_future_dataframe</span>(m, <span class="at">periods =</span> <span class="dv">3</span>, <span class="at">freq =</span> <span class="st">&#39;month&#39;</span>)</span>
-<span id="cb5-3"><a href="modelo-facebook-prophet.html#cb5-3" aria-hidden="true" tabindex="-1"></a>forecast <span class="ot">=</span> <span class="fu">predict</span>(m, future)</span>
-<span id="cb5-4"><a href="modelo-facebook-prophet.html#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="modelo-facebook-prophet.html#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m, forecast)</span></code></pre></div>
-<p><img src="tes2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="modelo-facebook-prophet.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calcular las metricas de desempeño</span></span>
-<span id="cb6-2"><a href="modelo-facebook-prophet.html#cb6-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>y) <span class="co"># convertir a valores numéricos</span></span>
-<span id="cb6-3"><a href="modelo-facebook-prophet.html#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="modelo-facebook-prophet.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># extraer los valores pronosticados</span></span>
-<span id="cb6-5"><a href="modelo-facebook-prophet.html#cb6-5" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> forecast<span class="sc">$</span>yhat[forecast<span class="sc">$</span>ds <span class="sc">&gt;</span> <span class="st">&#39;2021-10-01&#39;</span>]</span>
-<span id="cb6-6"><a href="modelo-facebook-prophet.html#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="modelo-facebook-prophet.html#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># extraer los valores reales</span></span>
-<span id="cb6-8"><a href="modelo-facebook-prophet.html#cb6-8" aria-hidden="true" tabindex="-1"></a>actual <span class="ot">&lt;-</span> new_data<span class="sc">$</span>y[new_data<span class="sc">$</span>ds <span class="sc">&gt;</span> <span class="st">&#39;2021-10-01&#39;</span>]</span>
-<span id="cb6-9"><a href="modelo-facebook-prophet.html#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="modelo-facebook-prophet.html#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="modelo-facebook-prophet.html#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular accuracy metrics</span></span>
-<span id="cb6-12"><a href="modelo-facebook-prophet.html#cb6-12" aria-hidden="true" tabindex="-1"></a>mae <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(predicted <span class="sc">-</span> actual), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-13"><a href="modelo-facebook-prophet.html#cb6-13" aria-hidden="true" tabindex="-1"></a>rmse <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((predicted <span class="sc">-</span> actual)<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb6-14"><a href="modelo-facebook-prophet.html#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="modelo-facebook-prophet.html#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir</span></span>
-<span id="cb6-16"><a href="modelo-facebook-prophet.html#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;MAE:&quot;</span>, mae, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## MAE: 0.1077957</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="modelo-facebook-prophet.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;RMSE:&quot;</span>, rmse, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## RMSE: 0.1078969</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="modelo-facebook-prophet.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar pronósticos con el modelo Prophet</span></span>
+<span id="cb6-2"><a href="modelo-facebook-prophet.html#cb6-2" aria-hidden="true" tabindex="-1"></a>forecast_prophet <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_prophet, test_data, <span class="at">freq =</span> <span class="st">&#39;month&#39;</span>)</span></code></pre></div>
+<p>Se observa el pronóstico del modelo Prophet, incluyendo un intérvalo de confianza.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="modelo-facebook-prophet.html#cb7-1" aria-hidden="true" tabindex="-1"></a>forecast <span class="ot">=</span> <span class="fu">predict</span>(model_prophet, forecast_prophet)</span>
+<span id="cb7-2"><a href="modelo-facebook-prophet.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_prophet, forecast)</span></code></pre></div>
+<p><img src="tes2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Se calculan las métricas de desempeño para los dos modelos.</p>
+<pre><code>##     Model        MAE       RMSE
+## 1   ARIMA 0.06609547 0.09347311
+## 2 Prophet 0.10732330 0.11193692</code></pre>
+<p>En este caso, sorprende que el que tenga mejor comportamiento sea el modelo ARIMA. En otras prubas realizadas en la etapa de preparación, el modelo Prophet tuvo un mejor desempeño, aunque por poco.</p>
+<p>A continuación se presenta una gráfica de los pronósticos de los dos modelos.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Aquí se validaría la necesidad de incorporar otras variables predictoras, de modo que se pueda aprovechar más las capacidades del algoritmo Prophet.</p>
+<p>En todo caso, hasta este punto se podría decir que después de someterse a un proceso de manipulación efectiva, los registros de Casos de Dengue Grave en Cali se convierten en una serie de tiempo viable para utilizar el enfoque de regresión, toda vez que no representa una variable categórica y presenta una dinámica estacionaria.</p>
 
 </div>
             </section>
