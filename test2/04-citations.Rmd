@@ -147,7 +147,7 @@ Como se había señalado antes, en este caso el resultado indica que se trata de
 
 También se buscó identificar puntos de cambio significativos en la serie de tiempo, pero no se evidenció ninguno, como se observa a continuación.
 
-```{r fig15, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+```{r fig17, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
 
 library(changepoint)
 
@@ -170,7 +170,7 @@ plot(cpt_obj)
 Se realizó un pronóstico del valor de un mes futuro. La gráfica presenta el valor predicho y los intérvalos de confianza.
 
 
-```{r fig16, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+```{r fig18, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
 
 library(forecast)
 
@@ -200,7 +200,7 @@ data.ts.outliers
 ```
 
 
-```{r fig17, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
+```{r fig19, out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE}
 
 plot(data.ts.outliers)
 

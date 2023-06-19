@@ -175,17 +175,17 @@
 <p>Para comenzar, el modelo Holt-Winters es una técnica muy utilizada en el pronóstico de series de tiempo. Parece un recurso particularmente adecuado para el análisis de los casos de Dengue Grave, porque se trata de un conjunto de datos que corresponde a una ventana de tiempo relativamente pequeña. Además, los procesos de vigilancia epidemiológica típicamente se valen de pronósticos a corto plazo, por lo cual, algunas de las fortalezas del modelo Holt-Winter pueden ser útiles para predecir valores futuros de contagio a partir de las tendencias y patrones pasados.</p>
 <p>A continuación se presenta el modelo ajustado a partir de la serie de tiempo que se creó utilizando el operador diferencia. Se seleccionó la componente estacional aditiva, pensando en que podría ser una elección adecuada dados los hallazgos preliminares de una cierta concentración de casos en los primeros meses del año, presumiblemente debido a factores ambientales, de modo que esta opción permitiría separar claramente la tendencia de los patrones estacionales de la serie de tiempo.</p>
 <p>A partir de lo anterior, se encontraron los parámetros alpha, beta y gamma para dar peso a los valores pasados, a la tendencia y a la estacionalidad de los pronósticos.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig14-1.png" width="672" /></p>
 <p>Como se puede observar, salvo algunas pocas excepciones, las formas generales de las dos series no son parecidas. De modo que los puntos ajustados del modelo no siguen de manera precisa las tendencias y patrones de la serie de casos de Dengue Grave.</p>
 <p>Con todo, se realiza la descomposición de los componentes de la serie de tiempo: nivel, tendencia y estacionalidad, como se observa a continación.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig15-1.png" width="672" /></p>
 <p>Si bien la componente de estacionalidad es un tanto irregular, en general, se confirma que el inicio de cada año presenta un repunte importante respecto a los valores de otros periodos. Además, aunque la data cruda no permitía identificarlo con claridad, las transformaciones y procedimientos aplicados permiten ver una cierta tendencia al alza en los casos de dengue grave.</p>
 <p>A partir de todo lo anterior, se procedió a realizar un pronóstico de la cantidad de casos de dengue grave de los primeros tres meses del año 2022.</p>
 <pre><code>                fit      upr       lwr
 Jan 2022  0.4836529 2.929509 -1.962204
 Feb 2022  0.8027942 3.251083 -1.645494
 Mar 2022 -1.0709187 1.380271 -3.522108</code></pre>
-<p><img src="tes2_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig16-1.png" width="672" /></p>
 <p>El alcance del análisis hasta este punto no incluye la evaluación de la calidad de este pronóstico. Sin embargo, en caso de lograr un buen ajuste, se trataría de un insumo útil para tomar de decisiones oportunas relacionadas, por ejemplo, con las medidas de respuesta necesarias ante el escenario de un brote de Dengue Grave.</p>
 </div>
 <div id="suavizamiento-exponencial-simple" class="section level2 hasAnchor" number="4.2">

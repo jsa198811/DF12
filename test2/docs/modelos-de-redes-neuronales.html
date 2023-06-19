@@ -235,9 +235,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 7</span> Modelos de Redes Neuronales<a href="modelos-de-redes-neuronales.html#modelos-de-redes-neuronales" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Se presenta la aproximación al uso básico de las Redes Neuronales Recurrentes Elman y Jordan.</p>
 <p>Para comenzar, se retomará la versión transformada de la serie que se está analizando en este informe, la cantidad de casos de dengue grave en Cali, tal como se presenta a continuación.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig24-1.png" width="672" /></p>
 <p>Sin embargo, se utilizará la versión normalizada de los datos, tal como se observa a continuación.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig25-1.png" width="672" /></p>
 <div id="elman" class="section level2 hasAnchor" number="7.1">
 <h2><span class="header-section-number">7.1</span> Elman<a href="modelos-de-redes-neuronales.html#elman" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modelos-de-redes-neuronales.html#cb1-1" tabindex="-1"></a><span class="fu">require</span>(RSNNS)</span>
@@ -256,10 +256,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-5"><a href="modelos-de-redes-neuronales.html#cb4-5" tabindex="-1"></a> , <span class="at">maxit=</span><span class="dv">5000</span></span>
 <span id="cb4-6"><a href="modelos-de-redes-neuronales.html#cb4-6" tabindex="-1"></a> )</span></code></pre></div>
 <p>En este caso, después de hacer diferentes intentos, se eligió crear una red de dos capas, cada una de siete neuronas. La tasa de aprendiaje es 0.1, y el número máximo de iteraciones de 5000.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig26-1.png" width="672" /></p>
 <p>La gráfica anterior muestra que el error converge a cero medianamente rápidamente.</p>
 <p>Ahora, se realiza una predicción y se compara con el conjunto de datos de prueba.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig27-1.png" width="672" /></p>
 <p>Como se puede observar, en general, el ajuste no es del todo bueno.</p>
 </div>
 <div id="jordan" class="section level2 hasAnchor" number="7.2">
@@ -272,7 +272,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-4"><a href="modelos-de-redes-neuronales.html#cb5-4" tabindex="-1"></a> <span class="at">learnFuncParams=</span><span class="fu">c</span>(<span class="fl">0.01</span>),</span>
 <span id="cb5-5"><a href="modelos-de-redes-neuronales.html#cb5-5" tabindex="-1"></a> <span class="at">maxit=</span><span class="dv">5000</span>)</span></code></pre></div>
 <p>A continuación se observa la predicción realizada y su comparación con el conjunto de datos de prueba.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig28-1.png" width="672" /></p>
 <p>Aquí tampoco se logró un buen ajuste.</p>
 </div>
 <div id="resumen-y-conclusión" class="section level2 hasAnchor" number="7.3">
@@ -281,7 +281,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>En suma, como se esperaba para esta primera exploración, ninguno de los dos modelos logró un desempeño ni medianamente satisfactorio, como lo pueden evidenciar el siguiente resumen de métricas calculados a partir de los conjuntos de prueba.</p>
 <pre><code>  Modelo  MAE RMSE   R2
 1  Elman 0.09 0.10 0.39
-2 Jordan 0.09 0.12 0.02</code></pre>
+2 Jordan 0.09 0.11 0.34</code></pre>
 
 </div>
 </div>

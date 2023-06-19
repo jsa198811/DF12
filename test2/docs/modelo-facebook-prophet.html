@@ -170,7 +170,7 @@
 <div id="modelo-facebook-prophet" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter 6</span> Modelo Facebook Prophet<a href="modelo-facebook-prophet.html#modelo-facebook-prophet" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Para comenzar, se retoma la gráfica de la variable de Casos de Dengue Grave transformada a través del operador diferencia y rezagada un periodo.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig20-1.png" width="672" /></p>
 <p>Ahora, se realiza una partición de la serie para contar con un subconjunto de prueba y otro de entrenamiento. Se eligió realizar un pronóstico de corto plazo, dada la variabildad histórica y los elementos de contexto de la vigilancia epidemiológica.</p>
 <div id="regresión-univariada" class="section level2 hasAnchor" number="6.1">
 <h2><span class="header-section-number">6.1</span> Regresión Univariada<a href="modelo-facebook-prophet.html#regresión-univariada" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -178,14 +178,14 @@
 <pre><code>Disabling weekly seasonality. Run prophet with weekly.seasonality=TRUE to override this.</code></pre>
 <pre><code>Disabling daily seasonality. Run prophet with daily.seasonality=TRUE to override this.</code></pre>
 <p>Se observa el pronóstico del modelo Prophet, incluyendo un intérvalo de confianza.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig21-1.png" width="672" /></p>
 <p>Se calculan las métricas de desempeño para los dos modelos.</p>
 <pre><code>    Model        MAE       RMSE
 1   ARIMA 0.06609547 0.09347311
 2 Prophet 0.10732330 0.11193692</code></pre>
 <p>En este caso, sorprende que el que tenga mejor comportamiento sea el modelo ARIMA. En otras prubas realizadas en la etapa de preparación, el modelo Prophet tuvo un mejor desempeño, aunque por poco.</p>
 <p>A continuación se presenta una gráfica de los pronósticos de los dos modelos.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig22-1.png" width="672" /></p>
 <p>Aquí se validaría la necesidad de incorporar otras variables predictoras, de modo que se pueda aprovechar más las capacidades del algoritmo Prophet.</p>
 </div>
 <div id="regresión-multivariada" class="section level2 hasAnchor" number="6.2">
@@ -197,7 +197,7 @@
 1   ARIMA 0.20100128 0.2379388
 2 Prophet 0.01893571 0.0228082</code></pre>
 <p>Como se puede observar, en este caso el desempeño del modelo Prophet supera con creces el obtenido por el modelo Arima. Esto confirma la relevancia de la inclusión de las covariables precipitación, lluvia y temperatura.</p>
-<p><img src="tes2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="tes2_files/figure-html/fig23-1.png" width="672" /></p>
 </div>
 <div id="conclusión-sobre-regresión" class="section level2 hasAnchor" number="6.3">
 <h2><span class="header-section-number">6.3</span> Conclusión sobre regresión<a href="modelo-facebook-prophet.html#conclusión-sobre-regresión" class="anchor-section" aria-label="Anchor link to header"></a></h2>

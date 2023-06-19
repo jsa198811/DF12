@@ -35,7 +35,7 @@ c220i.ts <- diff(c220.ts, lag = 1)
 ```
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r fig14, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(TSA)
 
@@ -51,7 +51,7 @@ Como se puede observar, salvo algunas pocas excepciones, las formas generales de
 Con todo, se realiza la descomposición de los componentes de la serie de tiempo: nivel, tendencia y estacionalidad, como se observa a continación.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r fig15, echo=FALSE, message=FALSE, warning=FALSE}
 
 plot(fitted(modelo_HW), main="Descomposición con HV", xlab="Año", ylab="Dif. Casos")
 
@@ -71,7 +71,7 @@ pred
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r fig16, echo=FALSE, message=FALSE, warning=FALSE}
 
 plot(modelo_HW, pred)
 

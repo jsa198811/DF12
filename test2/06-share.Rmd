@@ -41,7 +41,7 @@ c220i_std.ts <- (c220i.ts-min(c220i.ts))/(max(c220i.ts)-min(c220i.ts))
 
 Para comenzar, se retomará la versión transformada de la serie que se está analizando en este informe, la cantidad de casos de dengue grave en Cali, tal como se presenta a continuación.
 
-```{r}
+```{r fig24}
 
 autoplot(c220i.ts)
 
@@ -50,7 +50,7 @@ autoplot(c220i.ts)
 
 Sin embargo, se utilizará la versión normalizada de los datos, tal como se observa a continuación.
 
-```{r}
+```{r fig25}
 
 autoplot(c220i_std.ts)
 
@@ -123,7 +123,7 @@ fit<-elman(inputs[train],
 En este caso, después de hacer diferentes intentos, se eligió crear una red de dos capas, cada una de siete neuronas. La tasa de aprendiaje es 0.1, y el número máximo de iteraciones de 5000.
 
 
-```{r}
+```{r fig26}
 
 plotIterativeError(fit)
 
@@ -135,7 +135,7 @@ La gráfica anterior muestra que el error converge a cero medianamente rápidame
 
 Ahora, se realiza una predicción y se compara con el conjunto de datos de prueba.
 
-```{r}
+```{r fig27}
 
 y<-as.vector(outputs[-train])
 plot(y,type="l")
@@ -192,7 +192,7 @@ fit<-jordan(inputs[train],
 
 A continuación se observa la predicción realizada y su comparación con el conjunto de datos de prueba.
 
-```{r}
+```{r fig28}
 
 pred<-predict(fit,inputs[-train])
 plot(y,type="l")
