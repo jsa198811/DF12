@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Metodología Box-Jenkins | Casos de Dengue Grave en Cali 2015-2022</title>
+  <title>Chapter 7 Modelos de Redes Neuronales | Casos de Dengue Grave en Cali 2015-2022</title>
   <meta name="description" content="Este es un reporte que consolida el trabajo realizado durante el desarrollo de la asignatura Análisis de Series de Tiempo de la Maestría en Ciencia de Datos." />
   <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Metodología Box-Jenkins | Casos de Dengue Grave en Cali 2015-2022" />
+  <meta property="og:title" content="Chapter 7 Modelos de Redes Neuronales | Casos de Dengue Grave en Cali 2015-2022" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Este es un reporte que consolida el trabajo realizado durante el desarrollo de la asignatura Análisis de Series de Tiempo de la Maestría en Ciencia de Datos." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Metodología Box-Jenkins | Casos de Dengue Grave en Cali 2015-2022" />
+  <meta name="twitter:title" content="Chapter 7 Modelos de Redes Neuronales | Casos de Dengue Grave en Cali 2015-2022" />
   
   <meta name="twitter:description" content="Este es un reporte que consolida el trabajo realizado durante el desarrollo de la asignatura Análisis de Series de Tiempo de la Maestría en Ciencia de Datos." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="modelo-de-hw-y-suavizamiento.html"/>
-<link rel="next" href="modelo-facebook-prophet.html"/>
+<link rel="prev" href="modelo-facebook-prophet.html"/>
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -54,6 +54,70 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <style type="text/css">
   
@@ -143,8 +207,8 @@
 </ul></li>
 <li class="chapter" data-level="7" data-path="modelos-de-redes-neuronales.html"><a href="modelos-de-redes-neuronales.html"><i class="fa fa-check"></i><b>7</b> Modelos de Redes Neuronales</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="modelos-de-redes-neuronales.html"><a href="modelos-de-redes-neuronales.html#elman"><i class="fa fa-check"></i><b>7.1</b> ELMAN</a></li>
-<li class="chapter" data-level="7.2" data-path="modelos-de-redes-neuronales.html"><a href="modelos-de-redes-neuronales.html#jordan"><i class="fa fa-check"></i><b>7.2</b> JORDAN</a></li>
+<li class="chapter" data-level="7.1" data-path="modelos-de-redes-neuronales.html"><a href="modelos-de-redes-neuronales.html#elman"><i class="fa fa-check"></i><b>7.1</b> Elman</a></li>
+<li class="chapter" data-level="7.2" data-path="modelos-de-redes-neuronales.html"><a href="modelos-de-redes-neuronales.html#jordan"><i class="fa fa-check"></i><b>7.2</b> Jordan</a></li>
 <li class="chapter" data-level="7.3" data-path="modelos-de-redes-neuronales.html"><a href="modelos-de-redes-neuronales.html#resumen-y-conclusión"><i class="fa fa-check"></i><b>7.3</b> Resumen y conclusión</a></li>
 </ul></li>
 <li class="divider"></li>
@@ -167,75 +231,58 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="metodología-box-jenkins" class="section level1 hasAnchor" number="5">
-<h1><span class="header-section-number">Chapter 5</span> Metodología Box-Jenkins<a href="metodología-box-jenkins.html#metodología-box-jenkins" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Esta metodología incluye los siguientes pasos:
-- Visualizar la serie.
-- Transformarla en estacionaria.
-- Graficar ACF-PACF.
-- Construir el modelo.
-- Hacer la predicción.</p>
-<p>A continuación se desarrollan cada uno de los pasos para la serie del Dengue Grave en Cali.</p>
-<div id="visualizar-la-serie" class="section level2 hasAnchor" number="5.1">
-<h2><span class="header-section-number">5.1</span> Visualizar la serie<a href="metodología-box-jenkins.html#visualizar-la-serie" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>En primer lugar, retomaremos la serie original que es el objeto de este análisis, es decir, la cantidad de casos de Dengue Grave en Cali.</p>
-<p><img src="tes2_files/figure-html/fig11-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<div id="modelos-de-redes-neuronales" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Modelos de Redes Neuronales<a href="modelos-de-redes-neuronales.html#modelos-de-redes-neuronales" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Se presenta la aproximación al uso básico de las Redes Neuronales Recurrentes Elman y Jordan.</p>
+<p>Para comenzar, se retomará la versión transformada de la serie que se está analizando en este informe, la cantidad de casos de dengue grave en Cali, tal como se presenta a continuación.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Sin embargo, se utilizará la versión normalizada de los datos, tal como se observa a continuación.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div id="elman" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Elman<a href="modelos-de-redes-neuronales.html#elman" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modelos-de-redes-neuronales.html#cb1-1" tabindex="-1"></a><span class="fu">require</span>(RSNNS)</span>
+<span id="cb1-2"><a href="modelos-de-redes-neuronales.html#cb1-2" tabindex="-1"></a><span class="fu">require</span> (quantmod)</span></code></pre></div>
+<p>Entre los elementos clave en la fase de preparación, se define la cantidad de registros que serán parte del entrenamiento del modelo, considerando la disponibilidad de registros y los valores que quedarán comprometidos al crear variables a partir del análisis de rezagos.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="modelos-de-redes-neuronales.html#cb2-1" tabindex="-1"></a>train <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">67</span></span></code></pre></div>
+<p>Como se anticipaba anteriormente, se definen como variables de entrenamiento los valores rezadados de los últimos tres periodos.</p>
+<p>Ahora, se definen los valores de entrada y salida de la red neuronal.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="modelos-de-redes-neuronales.html#cb3-1" tabindex="-1"></a>inputs<span class="ot">&lt;-</span>slog[,<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>] </span>
+<span id="cb3-2"><a href="modelos-de-redes-neuronales.html#cb3-2" tabindex="-1"></a>outputs<span class="ot">&lt;-</span>slog[,<span class="dv">1</span>]</span></code></pre></div>
+<p>Luego, se ajusta la red Elman.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="modelos-de-redes-neuronales.html#cb4-1" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">elman</span>(inputs[train],</span>
+<span id="cb4-2"><a href="modelos-de-redes-neuronales.html#cb4-2" tabindex="-1"></a> outputs[train]</span>
+<span id="cb4-3"><a href="modelos-de-redes-neuronales.html#cb4-3" tabindex="-1"></a> , <span class="at">size=</span><span class="fu">c</span>(<span class="dv">7</span>,<span class="dv">7</span>)</span>
+<span id="cb4-4"><a href="modelos-de-redes-neuronales.html#cb4-4" tabindex="-1"></a> , <span class="at">learnFuncParams=</span><span class="fu">c</span>(<span class="fl">0.1</span>)</span>
+<span id="cb4-5"><a href="modelos-de-redes-neuronales.html#cb4-5" tabindex="-1"></a> , <span class="at">maxit=</span><span class="dv">5000</span></span>
+<span id="cb4-6"><a href="modelos-de-redes-neuronales.html#cb4-6" tabindex="-1"></a> )</span></code></pre></div>
+<p>En este caso, después de hacer diferentes intentos, se eligió crear una red de dos capas, cada una de siete neuronas. La tasa de aprendiaje es 0.1, y el número máximo de iteraciones de 5000.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>La gráfica anterior muestra que el error converge a cero medianamente rápidamente.</p>
+<p>Ahora, se realiza una predicción y se compara con el conjunto de datos de prueba.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Como se puede observar, en general, el ajuste no es del todo bueno.</p>
 </div>
-<div id="transformarla-en-estacionaria" class="section level2 hasAnchor" number="5.2">
-<h2><span class="header-section-number">5.2</span> Transformarla en estacionaria<a href="metodología-box-jenkins.html#transformarla-en-estacionaria" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Respecto a la transformación a una serie estacionaria, vale la pena retomar la serie creada en secciones anteriores a partir del uso del operador diferencia con el rezago de 1 periodo.</p>
-<p><img src="tes2_files/figure-html/fig12-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<div id="jordan" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Jordan<a href="modelos-de-redes-neuronales.html#jordan" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Ahora, se recurre a una versión básica de las redes de Jordan.</p>
+<p>Aprovechando los preparativos anteriores, se realiza el ajuste de inmediato. En este caso, se eligió tener siete capas ocultas, una taza de aprendizaje de 0.01 y un máximo de 5000 iteraciones.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="modelos-de-redes-neuronales.html#cb5-1" tabindex="-1"></a>fit<span class="ot">&lt;-</span><span class="fu">jordan</span>(inputs[train],</span>
+<span id="cb5-2"><a href="modelos-de-redes-neuronales.html#cb5-2" tabindex="-1"></a> outputs[train],</span>
+<span id="cb5-3"><a href="modelos-de-redes-neuronales.html#cb5-3" tabindex="-1"></a> <span class="at">size=</span><span class="dv">7</span>,</span>
+<span id="cb5-4"><a href="modelos-de-redes-neuronales.html#cb5-4" tabindex="-1"></a> <span class="at">learnFuncParams=</span><span class="fu">c</span>(<span class="fl">0.01</span>),</span>
+<span id="cb5-5"><a href="modelos-de-redes-neuronales.html#cb5-5" tabindex="-1"></a> <span class="at">maxit=</span><span class="dv">5000</span>)</span></code></pre></div>
+<p>A continuación se observa la predicción realizada y su comparación con el conjunto de datos de prueba.</p>
+<p><img src="tes2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Aquí tampoco se logró un buen ajuste.</p>
 </div>
-<div id="graficar-acf---pacf" class="section level2 hasAnchor" number="5.3">
-<h2><span class="header-section-number">5.3</span> Graficar ACF - PACF<a href="metodología-box-jenkins.html#graficar-acf---pacf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>A continuación se emplean las funciones de autocorrelación (ACF) y autocorrelación parcial (PACF). Los resultados indican la independencia de los valores de variable a lo largo del tiempo.</p>
-<div id="acf-1" class="section level3 hasAnchor" number="5.3.1">
-<h3><span class="header-section-number">5.3.1</span> ACF<a href="metodología-box-jenkins.html#acf-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><img src="tes2_files/figure-html/fig13-1.png" width="80%" style="display: block; margin: auto;" /></p>
-</div>
-<div id="pacf-1" class="section level3 hasAnchor" number="5.3.2">
-<h3><span class="header-section-number">5.3.2</span> PACF<a href="metodología-box-jenkins.html#pacf-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><img src="tes2_files/figure-html/fig14-1.png" width="80%" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="construir-el-modelo" class="section level2 hasAnchor" number="5.4">
-<h2><span class="header-section-number">5.4</span> Construir el modelo<a href="metodología-box-jenkins.html#construir-el-modelo" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>A continuación se aplica la función auto.arima para encontrar un modelo ARIMA de ajuste eficiente.</p>
-<pre><code>Series: c220i.ts 
-ARIMA(0,0,1) with zero mean 
+<div id="resumen-y-conclusión" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Resumen y conclusión<a href="modelos-de-redes-neuronales.html#resumen-y-conclusión" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Se realizaron múltiples iteraciones para tratar de mejorar los resultados, incluyendo la variación de los hiperparámetros y la asignación de un mayor número de variables rezagadas, sin embargo, en lugar de mejorar, los resultados eran todavía peores.</p>
+<p>En suma, como se esperaba para esta primera exploración, ninguno de los dos modelos logró un desempeño ni medianamente satisfactorio, como lo pueden evidenciar el siguiente resumen de métricas calculados a partir de los conjuntos de prueba.</p>
+<pre><code>  Modelo  MAE RMSE   R2
+1  Elman 0.09 0.10 0.36
+2 Jordan 0.09 0.11 0.32</code></pre>
 
-Coefficients:
-          ma1
-      -0.4124
-s.e.   0.0993
-
-sigma^2 = 0.9335:  log likelihood = -114.51
-AIC=233.02   AICc=233.17   BIC=237.85
-
-Training set error measures:
-                      ME    RMSE     MAE MPE MAPE      MASE         ACF1
-Training set -0.02942845 0.96036 0.74593 NaN  Inf 0.6448007 -0.009342725</code></pre>
-<p>Como se había señalado antes, en este caso el resultado indica que se trata de un modelo de media móvil de orden 1 sin término autoregresivo ni diferenciación y con media cero.</p>
-<div id="puntos-de-cambio-1" class="section level3 hasAnchor" number="5.4.1">
-<h3><span class="header-section-number">5.4.1</span> Puntos de cambio<a href="metodología-box-jenkins.html#puntos-de-cambio-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>También se buscó identificar puntos de cambio significativos en la serie de tiempo, pero no se evidenció ninguno, como se observa a continuación.</p>
-<p><img src="tes2_files/figure-html/fig15-1.png" width="80%" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="hacer-predicción" class="section level2 hasAnchor" number="5.5">
-<h2><span class="header-section-number">5.5</span> Hacer predicción<a href="metodología-box-jenkins.html#hacer-predicción" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="predicción-1" class="section level3 hasAnchor" number="5.5.1">
-<h3><span class="header-section-number">5.5.1</span> Predicción<a href="metodología-box-jenkins.html#predicción-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Se realizó un pronóstico del valor de un mes futuro. La gráfica presenta el valor predicho y los intérvalos de confianza.</p>
-<p><img src="tes2_files/figure-html/fig16-1.png" width="80%" style="display: block; margin: auto;" /></p>
-</div>
-<div id="validación-1" class="section level3 hasAnchor" number="5.5.2">
-<h3><span class="header-section-number">5.5.2</span> Validación<a href="metodología-box-jenkins.html#validación-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>A continuación se presenta el resultado del procedimiento realizado para detectar los valores atípicos de la serie de tiempo.</p>
-<p><img src="tes2_files/figure-html/fig17-1.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>La gráfica presenta los tres valores que difieren significativamente del patrón general de la serie de tiempo.</p>
-
-</div>
 </div>
 </div>
             </section>
@@ -243,8 +290,8 @@ Training set -0.02942845 0.96036 0.74593 NaN  Inf 0.6448007 -0.009342725</code><
           </div>
         </div>
       </div>
-<a href="modelo-de-hw-y-suavizamiento.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="modelo-facebook-prophet.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-facebook-prophet.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -275,7 +322,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/04-citations.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/06-share.Rmd",
 "text": "Edit"
 },
 "history": {

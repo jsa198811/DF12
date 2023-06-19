@@ -1,31 +1,240 @@
-# Sharing your book
+# Modelos de Redes Neuronales
 
-## Publishing
+Se presenta la aproximación al uso básico de las Redes Neuronales Recurrentes Elman y Jordan.
 
-HTML books can be published online, see: https://bookdown.org/yihui/bookdown/publishing.html
+```{r setup, include=FALSE}
+require (knitr)
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	comment = NA
+)
+```
 
-## 404 pages
+```{r message=FALSE, warning=FALSE, include=FALSE}
 
-By default, users will be directed to a 404 page if they try to access a webpage that cannot be found. If you'd like to customize your 404 page instead of using the default, you may add either a `_404.Rmd` or `_404.md` file to your project root and use code and/or Markdown syntax.
+library(tseries)
+library(readxl)
+library(dplyr)
+library(forecast)
+library(ggplot2)
 
-## Metadata for sharing
-
-Bookdown HTML books will provide HTML metadata for social sharing on platforms like Twitter, Facebook, and LinkedIn, using information you provide in the `index.Rmd` YAML. To setup, set the `url` for your book and the path to your `cover-image` file. Your book's `title` and `description` are also used.
-
-
-
-This `gitbook` uses the same social sharing data across all chapters in your book- all links shared will look the same.
-
-Specify your book's source repository on GitHub using the `edit` key under the configuration options in the `_output.yml` file, which allows users to suggest an edit by linking to a chapter's source file. 
-
-Read more about the features of this output format here:
-
-https://pkgs.rstudio.com/bookdown/reference/gitbook.html
-
-Or use:
-
-```{r eval=FALSE}
-?bookdown::gitbook
 ```
 
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+data <- read_excel("~/0. MCD/3/TS/unidad 2/data.xlsx", sheet = "220m")
+
+data$date <- as.Date(data$date,format = "%Y/%m/%d")
+
+attach(data)
+
+c220.ts <- ts(sqrt(c220), start = c(2015,1), frequency=12)
+
+c220i.ts <- diff(c220.ts, lag = 1)
+
+c220i_std.ts <- (c220i.ts-min(c220i.ts))/(max(c220i.ts)-min(c220i.ts))
+
+```
+
+Para comenzar, se retomará la versión transformada de la serie que se está analizando en este informe, la cantidad de casos de dengue grave en Cali, tal como se presenta a continuación.
+
+```{r}
+
+autoplot(c220i.ts)
+
+```
+
+
+Sin embargo, se utilizará la versión normalizada de los datos, tal como se observa a continuación.
+
+```{r}
+
+autoplot(c220i_std.ts)
+
+```
+
+
+## Elman
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+require(RSNNS)
+require (quantmod)
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+slog <- c220i_std.ts
+
+```
+
+
+Entre los elementos clave en la fase de preparación, se define la cantidad de registros que serán parte del entrenamiento del modelo, considerando la disponibilidad de registros y los valores que quedarán comprometidos al crear variables a partir del análisis de rezagos.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+train <- 1:67
+
+```
+
+
+Como se anticipaba anteriormente, se definen como variables de entrenamiento los valores rezadados de los últimos tres periodos.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+y<-as.zoo(slog)
+x1<-Lag(y,k=1)
+x2<-Lag(y,k=2)
+x3<-Lag(y,k=3)
+slog<-cbind(y,x1,x2,x3)
+slog<-slog[-(1:3),] 
+
+```
+
+
+Ahora, se definen los valores de entrada y salida de la red neuronal.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+inputs<-slog[,2:4] 
+outputs<-slog[,1]
+
+```
+
+
+Luego, se ajusta la red Elman.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+fit<-elman(inputs[train],
+ outputs[train]
+ , size=c(7,7)
+ , learnFuncParams=c(0.1)
+ , maxit=5000
+ )
+
+```
+
+
+En este caso, después de hacer diferentes intentos, se eligió crear una red de dos capas, cada una de siete neuronas. La tasa de aprendiaje es 0.1, y el número máximo de iteraciones de 5000.
+
+
+```{r}
+
+plotIterativeError(fit)
+
+```
+
+
+La gráfica anterior muestra que el error converge a cero medianamente rápidamente.
+
+
+Ahora, se realiza una predicción y se compara con el conjunto de datos de prueba.
+
+```{r}
+
+y<-as.vector(outputs[-train])
+plot(y,type="l")
+pred<-predict(fit,inputs[-train])
+lines(pred,col="red")
+
+```
+
+
+Como se puede observar, en general, el ajuste no es del todo bueno.
+
+
+```{r}
+
+# Crear un data frame con los vectores y y pred
+df <- data.frame(y, pred)
+lm_model <- lm(y ~ pred, data = df)
+r2 <- summary(lm_model)$r.squared
+
+# Calcular las métricas de desempeño para ARIMA
+accuracy_elman1 <- data.frame(
+  Modelo = "Elman",
+  MAE = round(Metrics::mae(y, pred),2),
+  RMSE = round(Metrics::rmse(y, pred),2),
+  R2 = round(r2,2)
+)
+
+```
+
+
+```{r}
+
+```
+
+
+## Jordan
+
+Ahora, se recurre a una versión básica de las redes de Jordan.
+
+Aprovechando los preparativos anteriores, se realiza el ajuste de inmediato. En este caso, se eligió tener siete capas ocultas, una taza de aprendizaje de 0.01 y un máximo de 5000 iteraciones.
+
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+fit<-jordan(inputs[train],
+ outputs[train],
+ size=7,
+ learnFuncParams=c(0.01),
+ maxit=5000)
+
+```
+
+
+A continuación se observa la predicción realizada y su comparación con el conjunto de datos de prueba.
+
+```{r}
+
+pred<-predict(fit,inputs[-train])
+plot(y,type="l")
+lines(pred,col="red")
+
+```
+
+
+Aquí tampoco se logró un buen ajuste.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+
+df <- data.frame(y, pred)
+lm_model <- lm(y ~ pred, data = df)
+r2 <- summary(lm_model)$r.squared
+
+# Calcular las métricas de desempeño para ARIMA
+accuracy_jordan1 <- data.frame(
+  Modelo = "Jordan",
+  MAE = round(Metrics::mae(y, pred),2),
+  RMSE = round(Metrics::rmse(y, pred),2),
+  R2 = round(r2,2)
+)
+
+
+```
+
+
+## Resumen y conclusión
+
+
+Se realizaron múltiples iteraciones para tratar de mejorar los resultados, incluyendo la variación de los hiperparámetros y la asignación de un mayor número de variables rezagadas, sin embargo, en lugar de mejorar, los resultados eran todavía peores. 
+
+En suma, como se esperaba para esta primera exploración, ninguno de los dos modelos logró un desempeño ni medianamente satisfactorio, como lo pueden evidenciar el siguiente resumen de métricas calculados a partir de los conjuntos de prueba.
+
+```{r}
+
+# Crear tabla de métricas
+metrics_table <- rbind(accuracy_elman1, accuracy_jordan1)
+
+print(metrics_table)
+
+```

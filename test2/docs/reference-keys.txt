@@ -62,3 +62,7 @@ regresión-univariada
 regresión-multivariada
 conclusión-sobre-viabilidad-de-la-regresión
 conclusión-sobre-regresión
+modelos-de-redes-neuronales
+elman
+jordan
+resumen-y-conclusión
